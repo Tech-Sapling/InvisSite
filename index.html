@@ -26,16 +26,79 @@ body::-webkit-scrollbar { display: none; }
     --page-max: 1440px;
 }
 
+/* ── TOPBAR ───────────────────────────────────────────── */
+#site-topbar {
+    position: sticky; top: 0; z-index: 500;
+    height: 54px;
+    background: rgba(9,14,33,0.97);
+    border-bottom: 1px solid rgba(79,124,255,0.1);
+    backdrop-filter: blur(20px);
+    display: flex; align-items: center;
+    padding: 0 24px; gap: 16px;
+}
+.topbar-logo img {
+    height: 30px; width: 30px; object-fit: contain;
+    border-radius: 8px; opacity: .92; display: block;
+    transition: opacity .2s;
+}
+.topbar-logo img:hover { opacity: 1; }
+.topbar-search-wrap { flex: 1; max-width: 480px; position: relative; }
+.topbar-search {
+    width: 100%;
+    background: #0f1a3e;
+    border: 1.5px solid rgba(79,124,255,0.18);
+    border-radius: 10px;
+    color: #fff; font-size: 13px; font-family: inherit;
+    padding: 8px 16px 8px 38px; outline: none;
+    transition: border-color .22s, background .22s, box-shadow .22s;
+}
+.topbar-search:focus {
+    border-color: rgba(79,124,255,0.55);
+    background: #111f48;
+    box-shadow: 0 0 0 3px rgba(79,124,255,0.12);
+}
+.topbar-search::placeholder { color: #3d5080; }
+.topbar-search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); pointer-events: none; opacity: .4;
+    transition: opacity .2s;
+}
+.topbar-search-icon svg { width: 15px; height: 15px; fill: none; stroke: #7da4ff; stroke-width: 2; stroke-linecap: round; }
+.topbar-search-wrap:focus-within .topbar-search-icon { opacity: .85; }
+
 /* ── PAGE WRAPPER ─────────────────────────────────────── */
 #page-root {
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: 22px var(--page-pad) var(--page-pad);
+    padding: 0 var(--page-pad);
+    height: calc(100vh - 54px);
+    overflow: hidden;
 }
 
-.layout { display: flex; align-items: flex-start; }
-.main   { flex: 1; min-width: 0; }
-.left-col { display: flex; flex-direction: column; gap: 12px; margin-right: 18px; position: sticky; top: 22px; flex-shrink: 0; width: var(--sidebar-w); transition: width .32s var(--ease); }
+.layout {
+    display: flex; align-items: flex-start;
+    height: calc(100vh - 54px);
+    overflow: hidden;
+}
+.main {
+    flex: 1; min-width: 0;
+    height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none; -ms-overflow-style: none;
+    padding: 22px var(--page-pad) var(--page-pad) 0;
+}
+.main::-webkit-scrollbar { display: none; }
+.left-col {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-right: 18px; flex-shrink: 0;
+    width: var(--sidebar-w);
+    transition: width .32s var(--ease);
+    height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    scrollbar-width: none; -ms-overflow-style: none;
+    padding: 22px 0 16px;
+}
+.left-col::-webkit-scrollbar { display: none; }
 
 /* ── ANNOUNCE ─────────────────────────────────────────── */
 .announce-box { background: var(--bg-sidebar); border-radius: 14px; border: 1px solid rgba(79,124,255,0.2); overflow: hidden; animation: fadeUp .4s var(--ease) both; }
@@ -50,7 +113,7 @@ body::-webkit-scrollbar { display: none; }
 .poll-pct { font-size: 11px; opacity: .8; }
 
 /* ── SIDEBAR ──────────────────────────────────────────── */
-.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--bg-sidebar); border-radius: 14px; transition: width .32s var(--ease), min-width .32s var(--ease); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--bg-sidebar); border-radius: 14px; transition: width .32s var(--ease), min-width .32s var(--ease); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; flex-shrink: 0; }
 .sidebar.collapsed { width: var(--sidebar-col); min-width: var(--sidebar-col); }
 .sidebar-toggle { display: flex; align-items: center; justify-content: space-between; padding: 14px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.06); transition: background .2s; white-space: nowrap; user-select: none; }
 .sidebar-toggle:hover { background: rgba(79,124,255,0.08); }
@@ -69,15 +132,6 @@ body::-webkit-scrollbar { display: none; }
 .genre-item.active .genre-label, .genre-item:hover .genre-label { color: #fff; }
 .sidebar.collapsed .genre-label { opacity: 0; pointer-events: none; }
 .sidebar.collapsed .genre-item:hover::after { content: attr(data-label); position: absolute; left: calc(var(--sidebar-col) + 8px); top: 50%; transform: translateY(-50%); background: #1a2760; color: #fff; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; white-space: nowrap; z-index: 999; box-shadow: 0 6px 20px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); pointer-events: none; }
-
-/* ── SEARCH ───────────────────────────────────────────── */
-.search-wrap { position: relative; margin-bottom: 20px; animation: fadeDown .4s var(--ease) both; }
-.search-input { width: 100%; background: var(--bg-card); border: 1.5px solid rgba(255,255,255,0.07); border-radius: 12px; color: #fff; font-size: 14px; font-family: inherit; padding: 13px 18px 13px 48px; outline: none; transition: border-color .25s, box-shadow .25s; }
-.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,124,255,0.15); }
-.search-input::placeholder { color: #44445a; }
-.search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; opacity: .35; transition: opacity .2s; }
-.search-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
-.search-wrap:focus-within .search-icon { opacity: .85; }
 
 /* ── SECTIONS & HEADERS ───────────────────────────────── */
 .section { margin-bottom: 32px; }
@@ -128,6 +182,36 @@ body::-webkit-scrollbar { display: none; }
 .hero-left .title, .tall-card .title { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.1; text-shadow: 0 2px 14px rgba(0,0,0,0.8); }
 .small .title, .g3-card .title, .g4-card .title, .genre-card .title, .wide-card .title { font-size: 14px; font-weight: 800; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
 
+/* Tag chips */
+.card-content { }
+.tag-row {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin-top: 0;
+    transition: grid-template-rows .28s cubic-bezier(.4,0,.2,1),
+                opacity .22s cubic-bezier(.4,0,.2,1),
+                margin-top .28s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+}
+.tag-row-inner {
+    overflow: hidden;
+    display: flex; flex-wrap: wrap; gap: 5px;
+}
+.game-card:hover .tag-row {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 7px;
+}
+.tag-chip {
+    font-size: 10px; font-weight: 700; letter-spacing: .4px;
+    padding: 3px 8px; border-radius: 20px;
+    background: rgba(79,124,255,0.18);
+    border: 1px solid rgba(79,124,255,0.3);
+    color: #a0b8ff;
+    white-space: nowrap;
+}
+
 /* Genre view */
 .genre-view-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
 .genre-view-icon-wrap { width: 44px; height: 44px; border-radius: 10px; background: rgba(79,124,255,0.15); border: 1px solid rgba(79,124,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -146,7 +230,7 @@ body::-webkit-scrollbar { display: none; }
 .anim-section { animation: fadeUp .42s var(--ease) both; }
 
 /* ═══════════════════════════════════════════════════════
-   GAME OVERLAY  —  ENTER + EXIT ANIMATIONS
+   GAME OVERLAY
    ═══════════════════════════════════════════════════════ */
 #game-overlay {
     display: none; position: fixed; inset: 0; z-index: 9000;
@@ -154,12 +238,10 @@ body::-webkit-scrollbar { display: none; }
 }
 #game-overlay.active { display: flex; }
 
-/* Slide up + fade + unblur on enter */
 @keyframes overlayEnter {
     from { opacity: 0; transform: translateY(40px) scale(0.982); filter: blur(8px); }
     to   { opacity: 1; transform: translateY(0)    scale(1);     filter: blur(0);   }
 }
-/* Slide down + fade + blur + shrink on exit */
 @keyframes overlayExit {
     0%   { opacity: 1; transform: translateY(0)    scale(1);     filter: blur(0);   }
     20%  { opacity: 1; transform: translateY(6px)  scale(0.997); filter: blur(0);   }
@@ -217,6 +299,19 @@ body::-webkit-scrollbar { display: none; }
 </head>
 <body>
 
+<!-- ═══ TOPBAR ═══ -->
+<div id="site-topbar">
+  <a class="topbar-logo" href="#">
+    <img src="https://i.imgur.com/89sJzAy.png" alt="Logo" onerror="this.style.opacity='0'">
+  </a>
+  <div class="topbar-search-wrap">
+    <span class="topbar-search-icon">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    </span>
+    <input class="topbar-search" id="search-input" type="text" placeholder="Search games…" oninput="handleSearch(this.value)">
+  </div>
+</div>
+
 <!-- ═══ INLINE GAME PLAYER ═══ -->
 <div id="game-overlay">
   <div id="game-frame-wrap">
@@ -254,7 +349,7 @@ body::-webkit-scrollbar { display: none; }
   </div>
 </div>
 
-<!-- ═══ MAIN LAYOUT (padded + max-width) ═══ -->
+<!-- ═══ MAIN LAYOUT ═══ -->
 <div id="page-root">
 <div class="layout">
 <div class="left-col">
@@ -307,10 +402,6 @@ body::-webkit-scrollbar { display: none; }
 </div><!-- /left-col -->
 
 <div class="main">
-  <div class="search-wrap">
-    <span class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span>
-    <input class="search-input" id="search-input" type="text" placeholder="Search games..." oninput="handleSearch(this.value)">
-  </div>
   <div id="content"></div>
   <footer id="site-footer" style="margin-top:36px;padding:20px 24px;background:#0e1736;border-radius:14px;border:1px solid rgba(255,255,255,0.05);text-align:center;opacity:0;transition:opacity 0.6s ease;">
     <div style="font-size:14px;font-weight:700;color:#fff;font-family:'Inter',sans-serif;margin-bottom:4px;">Invisible Site 2023–2026</div>
@@ -419,7 +510,6 @@ GAMES.forEach(g => {
     });
 });
 
-/* ── OPEN GAME ──────────────────────────────────────────── */
 window.openGame = async (id) => {
     const game = GAMES.find(g => g.id === id);
     if (!game) return;
@@ -470,7 +560,6 @@ window.openGame = async (id) => {
     });
 };
 
-/* ── CLOSE GAME with exit animation ────────────────────── */
 window.closeGame = async () => {
     clearInterval(hbInterval);
     if (voteUnsub) { voteUnsub(); voteUnsub = null; }
@@ -484,7 +573,6 @@ window.closeGame = async () => {
     overlay.classList.remove('entering');
     overlay.classList.add('exiting');
 
-    // Wait for animation, then fully teardown
     overlay.addEventListener('animationend', () => {
         overlay.classList.remove('active','exiting');
         document.getElementById('game-iframe').src = 'about:blank';
@@ -550,12 +638,13 @@ document.addEventListener('keydown', e => {
         closeGame();
 });
 
-/* ── CARD + HEADER BUILDERS ─────────────────────────────── */
 function mkCard(g, wrapCls, isTop=false) {
     const likes = likesCounts[g.id] || 0;
     const likeLabel = likes >= 1000 ? (likes/1000).toFixed(1)+'k' : likes > 0 ? likes : '';
     const crown = isTop ? `<div class="crown-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17L6 7L12 13L18 7L21 17H3Z" fill="#FFD700" stroke="#FFA000" stroke-width="1.2" stroke-linejoin="round"/><circle cx="3" cy="17" r="1.5" fill="#FFD700"/><circle cx="21" cy="17" r="1.5" fill="#FFD700"/><circle cx="12" cy="13" r="1.5" fill="#FFD700"/><line x1="3" y1="19" x2="21" y2="19" stroke="#FFA000" stroke-width="1.5" stroke-linecap="round"/></svg><span>Hot</span></div>` : '';
-    return `<div class="${wrapCls}"><div class="game-card" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1></div></div></div></div>`;
+    const tags = (g.tags||[]).map(t => `<span class="tag-chip">${t}</span>`).join('');
+    const tagRow = tags ? `<div class="tag-row"><div class="tag-row-inner">${tags}</div></div>` : '';
+    return `<div class="${wrapCls}"><div class="game-card" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
 }
 
 function mkHeader(title, imgSrc, pill) {
@@ -623,8 +712,11 @@ window.setGenre      = (g, el) => {
 };
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('sidebar');
+    const leftCol = sidebar.closest('.left-col');
     sidebar.classList.toggle('collapsed');
-    sidebar.closest('.left-col').style.width = sidebar.classList.contains('collapsed') ? 'var(--sidebar-col)' : 'var(--sidebar-w)';
+    const w = sidebar.classList.contains('collapsed') ? 'var(--sidebar-col)' : 'var(--sidebar-w)';
+    leftCol.style.width = w;
+    leftCol.style.minWidth = w;
 };
 
 const announceRef = doc(db,'admin','board');
