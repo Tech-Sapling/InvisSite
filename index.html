@@ -14,6 +14,8 @@ html, body {
 body::-webkit-scrollbar { display: none; }
 :root {
     --bg-card:    #121b40;
+    --bg-card-b:  #0f1a38;
+    --bg-card-c:  #15203e;
     --bg-sidebar: #0e1736;
     --bg-header:  #0d1530;
     --text-dim:   #7a8bb5;
@@ -36,12 +38,36 @@ body::-webkit-scrollbar { display: none; }
     display: flex; align-items: center;
     padding: 0 24px; gap: 16px;
 }
-.topbar-logo img {
-    height: 30px; width: 30px; object-fit: contain;
-    border-radius: 8px; opacity: .92; display: block;
+.topbar-logo-wrap {
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0; text-decoration: none;
+}
+.topbar-logo-img-wrap {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border-radius: 8px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+}
+.topbar-logo-img-wrap img {
+    width: 30px; height: 30px;
+    object-fit: cover;
+    display: block;
+    opacity: .92;
     transition: opacity .2s;
 }
-.topbar-logo img:hover { opacity: 1; }
+.topbar-logo-wrap:hover .topbar-logo-img-wrap img { opacity: 1; }
+.topbar-site-name {
+    display: flex; flex-direction: column;
+    line-height: 1.05;
+    user-select: none;
+}
+.topbar-site-name span:first-child {
+    font-size: 13px; font-weight: 900; color: #fff;
+    letter-spacing: 0.5px;
+}
+.topbar-site-name span:last-child {
+    font-size: 13px; font-weight: 500; color: #4f7cff;
+    letter-spacing: 0.5px;
+}
 .topbar-search-wrap { flex: 1; max-width: 480px; position: relative; }
 .topbar-search {
     width: 100%;
@@ -113,7 +139,7 @@ body::-webkit-scrollbar { display: none; }
 .poll-pct { font-size: 11px; opacity: .8; }
 
 /* ── SIDEBAR ──────────────────────────────────────────── */
-.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--bg-sidebar); border-radius: 14px; transition: width .32s var(--ease), min-width .32s var(--ease); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; flex-shrink: 0; }
+.sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--bg-sidebar); border-radius: 14px; transition: width .32s var(--ease), min-width .32s var(--ease); flex-shrink: 0; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
 .sidebar.collapsed { width: var(--sidebar-col); min-width: var(--sidebar-col); }
 .sidebar-toggle { display: flex; align-items: center; justify-content: space-between; padding: 14px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.06); transition: background .2s; white-space: nowrap; user-select: none; }
 .sidebar-toggle:hover { background: rgba(79,124,255,0.08); }
@@ -152,8 +178,15 @@ body::-webkit-scrollbar { display: none; }
 .wide-card { grid-column: span 2; }
 .tall-card { grid-row: span 2; }
 
+/* ── CARD COLOR VARIANTS ─────────────────────────────── */
+.game-card.v-a { background: #121b40; border-color: rgba(255,255,255,0.04); }
+.game-card.v-b { background: #0f1730; border-color: rgba(255,255,255,0.03); }
+.game-card.v-c { background: #162248; border-color: rgba(100,140,255,0.08); }
+.game-card.v-d { background: #13183a; border-color: rgba(80,60,200,0.1); }
+.game-card.v-e { background: #111928; border-color: rgba(255,255,255,0.04); }
+
 /* ── GAME CARDS ───────────────────────────────────────── */
-.game-card { display: flex; flex-direction: column; cursor: pointer; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 2px solid rgba(255,255,255,0.04); padding: 0; text-align: left; width: 100%; height: 100%; transition: transform .28s var(--ease), border-color .28s var(--ease), box-shadow .28s var(--ease); animation: fadeUp .38s var(--ease) both; }
+.game-card { display: flex; flex-direction: column; cursor: pointer; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255,255,255,0.04); padding: 0; text-align: left; width: 100%; height: 100%; transition: transform .28s var(--ease), border-color .28s var(--ease), box-shadow .28s var(--ease); animation: fadeUp .38s var(--ease) both; }
 .game-card:hover { transform: translateY(-5px) scale(1.013); border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79,124,255,0.35), 0 24px 48px rgba(0,0,0,0.55), 0 0 36px rgba(79,124,255,0.18); }
 .game-card:active { transform: translateY(-2px) scale(1.005); }
 .game-card .image-box { flex: 1; }
@@ -164,13 +197,11 @@ body::-webkit-scrollbar { display: none; }
 .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(9,14,40,1) 0%, rgba(9,14,40,0.72) 28%, rgba(9,14,40,0.08) 58%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; transition: background .28s; }
 .game-card:hover .overlay { background: linear-gradient(to top, rgba(9,14,40,1) 0%, rgba(9,14,40,0.82) 32%, rgba(9,14,40,0.1) 62%, transparent 100%); }
 
-/* Crown */
 .crown-badge { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; align-items: center; gap: 5px; background: linear-gradient(135deg, rgba(255,180,0,0.22), rgba(255,120,0,0.18)); border: 1px solid rgba(255,190,0,0.45); border-radius: 20px; padding: 4px 9px 4px 6px; backdrop-filter: blur(6px); box-shadow: 0 0 14px rgba(255,160,0,0.25); animation: crownPop .4s cubic-bezier(.4,0,.2,1) both; }
 .crown-badge svg { width: 13px; height: 13px; flex-shrink: 0; filter: drop-shadow(0 0 4px rgba(255,200,0,0.6)); }
 .crown-badge span { font-size: 10px; font-weight: 900; letter-spacing: .8px; text-transform: uppercase; color: #ffd54f; line-height: 1; }
 @keyframes crownPop { from{opacity:0;transform:scale(0.7) translateY(-4px)} to{opacity:1;transform:scale(1) translateY(0)} }
 
-/* Like status */
 .status-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
 .like-heart { position: relative; flex-shrink: 0; font-size: 0; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
 .like-heart svg { width: 13px; height: 13px; fill: var(--accent); position: relative; z-index: 1; }
@@ -178,53 +209,24 @@ body::-webkit-scrollbar { display: none; }
 @keyframes heartpulse { 0%{transform:scale(0.6);opacity:.5} 70%{transform:scale(2.2);opacity:0} 100%{transform:scale(2.2);opacity:0} }
 .like-text { color: #7da4ff; font-size: 11px; font-weight: 700; letter-spacing: .4px; }
 
-/* Titles */
 .hero-left .title, .tall-card .title { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.1; text-shadow: 0 2px 14px rgba(0,0,0,0.8); }
 .small .title, .g3-card .title, .g4-card .title, .genre-card .title, .wide-card .title { font-size: 14px; font-weight: 800; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
 
-/* Tag chips */
-.card-content { }
-.tag-row {
-    display: grid;
-    grid-template-rows: 0fr;
-    opacity: 0;
-    margin-top: 0;
-    transition: grid-template-rows .28s cubic-bezier(.4,0,.2,1),
-                opacity .22s cubic-bezier(.4,0,.2,1),
-                margin-top .28s cubic-bezier(.4,0,.2,1);
-    pointer-events: none;
-}
-.tag-row-inner {
-    overflow: hidden;
-    display: flex; flex-wrap: wrap; gap: 5px;
-}
-.game-card:hover .tag-row {
-    grid-template-rows: 1fr;
-    opacity: 1;
-    margin-top: 7px;
-}
-.tag-chip {
-    font-size: 10px; font-weight: 700; letter-spacing: .4px;
-    padding: 3px 8px; border-radius: 20px;
-    background: rgba(79,124,255,0.18);
-    border: 1px solid rgba(79,124,255,0.3);
-    color: #a0b8ff;
-    white-space: nowrap;
-}
+.tag-row { display: grid; grid-template-rows: 0fr; opacity: 0; margin-top: 0; transition: grid-template-rows .28s cubic-bezier(.4,0,.2,1), opacity .22s cubic-bezier(.4,0,.2,1), margin-top .28s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+.tag-row-inner { overflow: hidden; display: flex; flex-wrap: wrap; gap: 5px; }
+.game-card:hover .tag-row { grid-template-rows: 1fr; opacity: 1; margin-top: 7px; }
+.tag-chip { font-size: 10px; font-weight: 700; letter-spacing: .4px; padding: 3px 8px; border-radius: 20px; background: rgba(79,124,255,0.18); border: 1px solid rgba(79,124,255,0.3); color: #a0b8ff; white-space: nowrap; }
 
-/* Genre view */
 .genre-view-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
 .genre-view-icon-wrap { width: 44px; height: 44px; border-radius: 10px; background: rgba(79,124,255,0.15); border: 1px solid rgba(79,124,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .genre-view-title { font-size: 22px; font-weight: 900; color: #fff; }
 .genre-view-count { font-size: 12px; color: var(--text-dim); margin-top: 2px; font-weight: 500; }
 
-/* Empty state */
 .empty-state { text-align: center; padding: 60px 0; color: var(--text-dim); }
 .empty-icon { margin-bottom: 14px; }
 .empty-icon svg { width: 38px; height: 38px; fill: none; stroke: #33334a; stroke-width: 1.5; stroke-linecap: round; }
 .empty-state p { font-size: 14px; font-weight: 500; }
 
-/* ── BASE ANIMATIONS ─────────────────────────────────── */
 @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
 .anim-section { animation: fadeUp .42s var(--ease) both; }
@@ -232,45 +234,26 @@ body::-webkit-scrollbar { display: none; }
 /* ═══════════════════════════════════════════════════════
    GAME OVERLAY
    ═══════════════════════════════════════════════════════ */
-#game-overlay {
-    display: none; position: fixed; inset: 0; z-index: 9000;
-    background: #090e21; flex-direction: column;
-}
+#game-overlay { display: none; position: fixed; inset: 0; z-index: 9000; background: #090e21; flex-direction: column; }
 #game-overlay.active { display: flex; }
 
-@keyframes overlayEnter {
-    from { opacity: 0; transform: translateY(40px) scale(0.982); filter: blur(8px); }
-    to   { opacity: 1; transform: translateY(0)    scale(1);     filter: blur(0);   }
-}
-@keyframes overlayExit {
-    0%   { opacity: 1; transform: translateY(0)    scale(1);     filter: blur(0);   }
-    20%  { opacity: 1; transform: translateY(6px)  scale(0.997); filter: blur(0);   }
-    100% { opacity: 0; transform: translateY(72px) scale(0.955); filter: blur(10px);}
-}
+@keyframes overlayEnter { from{opacity:0;transform:translateY(40px) scale(0.982);filter:blur(8px)} to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} }
+@keyframes overlayExit { 0%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} 20%{opacity:1;transform:translateY(6px) scale(0.997);filter:blur(0)} 100%{opacity:0;transform:translateY(72px) scale(0.955);filter:blur(10px)} }
 
 #game-overlay.entering { animation: overlayEnter .38s var(--ease) both; }
-#game-overlay.exiting  { animation: overlayExit  .4s  cubic-bezier(.4,0,1,1) both; pointer-events: none; }
+#game-overlay.exiting  { animation: overlayExit .4s cubic-bezier(.4,0,1,1) both; pointer-events: none; }
 
-/* ── GAME FRAME ───────────────────────────────────────── */
 #game-frame-wrap { flex: 1; position: relative; overflow: hidden; background: #000; }
 #game-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; background: #000; }
 
-/* ── BOTTOM BAR ───────────────────────────────────────── */
-#game-topbar {
-    display: flex; align-items: center; gap: 12px;
-    padding: 0 20px; height: 54px; flex-shrink: 0;
-    background: rgba(8,12,34,0.98);
-    border-top: 1px solid rgba(79,124,255,0.14);
-    transition: height .3s var(--ease), opacity .3s, padding .3s;
-    overflow: hidden; order: 2;
-    backdrop-filter: blur(12px);
-}
+#game-topbar { display: flex; align-items: center; gap: 12px; padding: 0 20px; height: 54px; flex-shrink: 0; background: rgba(8,12,34,0.98); border-top: 1px solid rgba(79,124,255,0.14); transition: height .3s var(--ease), opacity .3s, padding .3s; overflow: hidden; order: 2; backdrop-filter: blur(12px); }
 #game-topbar.collapsed { height: 0; opacity: 0; pointer-events: none; }
 
 .gbar-back { display: flex; align-items: center; gap: 6px; background: rgba(79,124,255,0.12); border: 1px solid rgba(79,124,255,0.25); color: #7da4ff; font-size: 12px; font-weight: 700; font-family: inherit; padding: 7px 13px; border-radius: 8px; cursor: pointer; flex-shrink: 0; transition: background .2s, transform .15s; }
 .gbar-back:hover { background: rgba(79,124,255,0.22); transform: translateX(-2px); }
 .gbar-back svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
-.gbar-logo { height: 26px; width: auto; object-fit: contain; opacity: .9; flex-shrink: 0; }
+.gbar-logo-wrap { width: 26px; height: 26px; flex-shrink: 0; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.gbar-logo-wrap img { width: 26px; height: 26px; object-fit: cover; display: block; opacity: .9; }
 .gbar-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.08); flex-shrink: 0; }
 .gbar-name { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.9); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .gbar-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -282,16 +265,7 @@ body::-webkit-scrollbar { display: none; }
 .gbar-btn.icon-only { padding: 7px; }
 .gbar-btn.icon-only svg { width: 15px; height: 15px; }
 
-/* ── HIDE/SHOW PILL ───────────────────────────────────── */
-#bar-toggle {
-    position: absolute; bottom: 10px; right: 14px; z-index: 100;
-    display: flex; align-items: center; gap: 5px;
-    background: rgba(8,12,34,0.82); border: 1px solid rgba(79,124,255,0.22);
-    border-radius: 20px; padding: 5px 11px 5px 8px;
-    cursor: pointer; backdrop-filter: blur(10px);
-    color: #7da4ff; font-size: 11px; font-weight: 700; font-family: 'Inter',sans-serif;
-    opacity: 0.5; transition: opacity .2s, background .2s; user-select: none;
-}
+#bar-toggle { position: absolute; bottom: 10px; right: 14px; z-index: 100; display: flex; align-items: center; gap: 5px; background: rgba(8,12,34,0.82); border: 1px solid rgba(79,124,255,0.22); border-radius: 20px; padding: 5px 11px 5px 8px; cursor: pointer; backdrop-filter: blur(10px); color: #7da4ff; font-size: 11px; font-weight: 700; font-family: 'Inter',sans-serif; opacity: 0.5; transition: opacity .2s, background .2s; user-select: none; }
 #bar-toggle:hover { opacity: 1; background: rgba(20,30,70,0.95); }
 #bar-toggle svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; transition: transform .3s var(--ease); }
 #bar-toggle.collapsed svg { transform: rotate(180deg); }
@@ -301,8 +275,14 @@ body::-webkit-scrollbar { display: none; }
 
 <!-- ═══ TOPBAR ═══ -->
 <div id="site-topbar">
-  <a class="topbar-logo" href="#">
-    <img src="https://i.imgur.com/89sJzAy.png" alt="Logo" onerror="this.style.opacity='0'">
+  <a class="topbar-logo-wrap" href="#">
+    <div class="topbar-logo-img-wrap">
+      <img src="https://i.imgur.com/89sJzAy.png" alt="Logo" onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="topbar-site-name">
+      <span>Invisible</span>
+      <span>Site</span>
+    </div>
   </a>
   <div class="topbar-search-wrap">
     <span class="topbar-search-icon">
@@ -326,7 +306,9 @@ body::-webkit-scrollbar { display: none; }
       <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
       Back
     </button>
-    <img class="gbar-logo" src="https://i.imgur.com/89sJzAy.png" alt="Logo" onerror="this.style.display='none'">
+    <div class="gbar-logo-wrap">
+      <img src="https://i.imgur.com/89sJzAy.png" alt="Logo" onerror="this.parentElement.style.display='none'">
+    </div>
     <div class="gbar-divider"></div>
     <span class="gbar-name" id="gbar-name">Game</span>
     <div class="gbar-actions">
@@ -399,7 +381,7 @@ body::-webkit-scrollbar { display: none; }
   <div class="announce-msg" id="announce-msg"></div>
   <div class="poll-options" id="poll-options"></div>
 </div>
-</div><!-- /left-col -->
+</div>
 
 <div class="main">
   <div id="content"></div>
@@ -408,8 +390,8 @@ body::-webkit-scrollbar { display: none; }
     <div style="font-size:12px;font-weight:600;color:#4f5fa8;font-family:'Inter',sans-serif;font-style:italic;">Branding All Rights Reserved To © Sapling</div>
   </footer>
 </div>
-</div><!-- /layout -->
-</div><!-- /page-root -->
+</div>
+</div>
 
 <script type="module">
 import { initializeApp }  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -448,12 +430,13 @@ const GAMES = [
     { id:'fnaf2',      name:"FNAF 2",              url:'https://run3.io/popgame/fnaf/fnaf2.html',                                 img:'https://store-images.s-microsoft.com/image/apps.60385.13578174030071833.ced2a7cf-09b3-4d12-8621-229829d1aa41.66df75dd-fd3d-46de-8a85-5278023c30a2?q=90&w=480&h=270', genres:['puzzle'], desc:'The withered animatronics are back and more terrifying.', tags:['Puzzle','Horror','Survival'] },
     { id:'fnaf3',      name:"FNAF 3",              url:'https://run3.io/popgame/fnaf/fnaf3.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/2/2b/FNAF3Artwork.png', genres:['puzzle'], desc:'One animatronic, one chance to survive the horror attraction.', tags:['Puzzle','Horror','Survival'] },
     { id:'fnaf4',      name:"FNAF 4",              url:'https://run3.io/popgame/fnaf/fnaf4.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/d/de/FNAF4Artwork.png', genres:['puzzle'], desc:'Survive nightmarish animatronics with only a flashlight.', tags:['Puzzle','Horror','Survival'] },
-    { id:'yohoho',     name:"YoHoHo.io",           url:'https://yohoho.io/',                                                      img:'https://yohoho.io/img/banner1200x630.jpg', genres:['casual','shooter','io'], desc:'Ye have been marrooned on a tropical island! Fight other pirates with yer cutlass and survive the battle royale! Fun & cool IO game!', tags:['Royale','Battling','Fun'] },
+    { id:'yohoho',     name:"YoHoHo.io",           url:'https://yohoho.io/',                                                      img:'https://yohoho.io/img/banner1200x630.jpg', genres:['casual','shooter','io'], desc:'Fight pirates with yer cutlass and survive the battle royale!', tags:['Royale','Battling','Fun'] },
     { id:'retrobowl',  name:'Retro Bowl',          url:'https://game316009.konggames.com/gamez/0031/6009/live/index.html',        img:'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919', genres:['puzzle','casual'], desc:'Lead your team to Retro Bowl glory in addictive retro football.', tags:['Puzzle','Casual','Sports','Retro'] },
-    { id:'spacewave',  name:'Space Wave',          url:'https://crazygames.cdn.msnfun.com/9nm5764dbppg/v8/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwMUQ5MzQ0Q0RDNTU2ODUzM0ExODIyRjZERDZBNjkwMCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjlubTU3NjRkYnBwZyIsInZhbHVlIjp7fX19',  img:'https://i.ytimg.com/vi/0L885f9nUI8/maxresdefault.jpg', genres:['puzzle','casual'], desc:'Wave around as a little chip shaped ship!', tags:['Puzzle','Casual','Retro'] },
+    { id:'spacewave',  name:'Space Wave',          url:'https://crazygames.cdn.msnfun.com/9nm5764dbppg/v8/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwMUQ5MzQ0Q0RDNTU2ODUzM0ExODIyRjZERDZBNjkwMCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjlubTU3NjRkYnBwZyIsInZhbHVlIjp7fX19', img:'https://i.ytimg.com/vi/0L885f9nUI8/maxresdefault.jpg', genres:['puzzle','casual'], desc:'Wave around as a little chip shaped ship!', tags:['Puzzle','Casual','Retro'] },
     { id:'upwarp',     name:'Upwarp',              url:'https://h5.meegames.com/games/9646486834/upwarp/index.html',              img:'https://img.arcadrome.com/7529ad66-d516-48b9-a6a9-80af0db67076/banner.png', genres:['puzzle'], desc:'Flip gravity and warp through increasingly tricky puzzle levels.', tags:['Puzzle','Platformer','Brain Game'] },
 ];
 
+const VARIANTS = ['v-a','v-b','v-c','v-d','v-e'];
 const GENRE_META = {
     io:      { l:'.IO Games', svg:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/>' },
     shooter: { l:'Shooter',   svg:'<circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/>' },
@@ -490,6 +473,8 @@ let activeVote     = null;
 let barCollapsed   = false;
 let voteUnsub      = null;
 let hbInterval     = null;
+const variantMap = {};
+GAMES.forEach((g,i) => { variantMap[g.id] = VARIANTS[i % VARIANTS.length]; });
 
 GAMES.forEach(g => {
     onSnapshot(doc(db,'games',g.id), snap => {
@@ -541,9 +526,8 @@ window.openGame = async (id) => {
     document.getElementById('game-iframe').src = game.url;
 
     const topbar = document.getElementById('game-topbar');
-    const toggle = document.getElementById('bar-toggle');
     topbar.classList.remove('collapsed');
-    toggle.classList.remove('collapsed');
+    document.getElementById('bar-toggle').classList.remove('collapsed');
     document.getElementById('toggle-label').textContent = 'Hide bar';
 
     clearInterval(hbInterval);
@@ -572,7 +556,6 @@ window.closeGame = async () => {
     const overlay = document.getElementById('game-overlay');
     overlay.classList.remove('entering');
     overlay.classList.add('exiting');
-
     overlay.addEventListener('animationend', () => {
         overlay.classList.remove('active','exiting');
         document.getElementById('game-iframe').src = 'about:blank';
@@ -639,12 +622,13 @@ document.addEventListener('keydown', e => {
 });
 
 function mkCard(g, wrapCls, isTop=false) {
+    const v = variantMap[g.id] || 'v-a';
     const likes = likesCounts[g.id] || 0;
     const likeLabel = likes >= 1000 ? (likes/1000).toFixed(1)+'k' : likes > 0 ? likes : '';
     const crown = isTop ? `<div class="crown-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17L6 7L12 13L18 7L21 17H3Z" fill="#FFD700" stroke="#FFA000" stroke-width="1.2" stroke-linejoin="round"/><circle cx="3" cy="17" r="1.5" fill="#FFD700"/><circle cx="21" cy="17" r="1.5" fill="#FFD700"/><circle cx="12" cy="13" r="1.5" fill="#FFD700"/><line x1="3" y1="19" x2="21" y2="19" stroke="#FFA000" stroke-width="1.5" stroke-linecap="round"/></svg><span>Hot</span></div>` : '';
     const tags = (g.tags||[]).map(t => `<span class="tag-chip">${t}</span>`).join('');
     const tagRow = tags ? `<div class="tag-row"><div class="tag-row-inner">${tags}</div></div>` : '';
-    return `<div class="${wrapCls}"><div class="game-card" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
+    return `<div class="${wrapCls}"><div class="game-card ${v}" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
 }
 
 function mkHeader(title, imgSrc, pill) {
@@ -671,7 +655,7 @@ function renderAll() {
     if (genre !== 'all') {
         const res = GAMES.filter(g=>g.genres.includes(genre));
         const meta = GENRE_META[genre];
-        html = `<div class="genre-view-header anim-section"><div class="genre-view-icon-wrap"><img src="https://i.imgur.com/89sJzAy.png" style="width:28px;height:28px;object-fit:contain;opacity:0.9;" onerror="this.style.display='none'"></div><div><div class="genre-view-title">${meta.l}</div><div class="genre-view-count">${res.length} game${res.length!==1?'s':''}</div></div></div>`;
+        html = `<div class="genre-view-header anim-section"><div class="genre-view-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#4f7cff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">${meta.svg}</svg></div><div><div class="genre-view-title">${meta.l}</div><div class="genre-view-count">${res.length} game${res.length!==1?'s':''}</div></div></div>`;
         html += res.length
             ? `<div class="grid-3 anim-section">${res.map(g=>mkCard(g,'genre-card')).join('')}</div>`
             : `<div class="empty-state anim-section"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#33334a" stroke-width="1.5" stroke-linecap="round">${meta.svg}</svg></div><p>No ${meta.l} games yet</p></div>`;
