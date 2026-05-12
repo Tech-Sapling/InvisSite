@@ -264,7 +264,6 @@ body::-webkit-scrollbar { display: none; }
     padding: 0; text-align: left; width: 100%; height: 100%;
     transition: transform .28s var(--ease), border-color .28s var(--ease), box-shadow .28s var(--ease);
     animation: fadeUp .38s var(--ease) both;
-    /* Ambient glow is set via --glow-color per card inline style */
     --glow-color: #4f7cff;
 }
 .game-card:hover {
@@ -357,67 +356,6 @@ body::-webkit-scrollbar { display: none; }
 #bar-toggle:hover { opacity: 1; background: rgba(20,30,70,0.95); }
 #bar-toggle svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; transition: transform .3s var(--ease); }
 #bar-toggle.collapsed svg { transform: rotate(180deg); }
-
-/* ── REPORT BUTTON ────────────────────────────────────── */
-.gbar-btn.report { color: rgba(255,255,255,0.35); }
-.gbar-btn.report:hover { background: rgba(255,100,60,0.12); border-color: rgba(255,100,60,0.35); color: #ff6b4a; }
-.gbar-btn.report.sent { background: rgba(255,100,60,0.15); border-color: rgba(255,100,60,0.4); color: #ff6b4a; cursor: default; pointer-events: none; }
-
-/* ── REPORT MODAL ─────────────────────────────────────── */
-#report-modal {
-    display: none; position: fixed; inset: 0; z-index: 9999;
-    align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
-    animation: fadeIn .18s ease both;
-}
-#report-modal.active { display: flex; }
-@keyframes fadeIn { from{opacity:0} to{opacity:1} }
-.report-box {
-    background: #111c42; border: 1.5px solid rgba(255,100,60,0.3);
-    border-radius: 16px; padding: 24px; width: 100%; max-width: 340px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(255,80,40,0.1);
-    animation: slideUp .22s cubic-bezier(.4,0,.2,1) both;
-}
-@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-.report-title { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-.report-title svg { width: 16px; height: 16px; fill: none; stroke: #ff6b4a; stroke-width: 2; stroke-linecap: round; }
-.report-sub { font-size: 12px; color: #7a8bb5; margin-bottom: 16px; }
-.report-reasons { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-.report-reason {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 13px; border-radius: 10px; cursor: pointer;
-    border: 1.5px solid rgba(255,255,255,0.07);
-    background: rgba(255,255,255,0.03);
-    transition: background .18s, border-color .18s;
-    user-select: none;
-}
-.report-reason:hover { background: rgba(255,100,60,0.1); border-color: rgba(255,100,60,0.35); }
-.report-reason.selected { background: rgba(255,100,60,0.15); border-color: rgba(255,100,60,0.5); }
-.report-reason-dot {
-    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
-    border: 2px solid rgba(255,255,255,0.2);
-    display: flex; align-items: center; justify-content: center;
-    transition: border-color .18s, background .18s;
-}
-.report-reason.selected .report-reason-dot { border-color: #ff6b4a; background: #ff6b4a; }
-.report-reason.selected .report-reason-dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
-.report-reason-label { font-size: 13px; font-weight: 600; color: #c5d0f0; }
-.report-actions { display: flex; gap: 8px; }
-.report-cancel {
-    flex: 1; padding: 10px; border-radius: 9px; border: 1.5px solid rgba(255,255,255,0.08);
-    background: transparent; color: #7a8bb5; font-size: 13px; font-weight: 700;
-    font-family: inherit; cursor: pointer; transition: background .18s, color .18s;
-}
-.report-cancel:hover { background: rgba(255,255,255,0.06); color: #fff; }
-.report-submit {
-    flex: 2; padding: 10px; border-radius: 9px; border: none;
-    background: linear-gradient(135deg, #ff5533, #ff3a1a);
-    color: #fff; font-size: 13px; font-weight: 900; font-family: inherit;
-    cursor: pointer; box-shadow: 0 4px 16px rgba(255,80,40,0.35);
-    transition: opacity .18s, transform .18s;
-}
-.report-submit:hover { opacity: .9; transform: translateY(-1px); }
-.report-submit:disabled { opacity: .45; cursor: default; transform: none; }
 </style>
 </head>
 <body>
@@ -483,49 +421,6 @@ body::-webkit-scrollbar { display: none; }
         <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         <span id="gbar-share-label">Share</span>
       </button>
-      <button class="gbar-btn icon-only" onclick="toggleFullscreen()" title="Fullscreen">
-        <svg id="fs-icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-      </button>
-      <button class="gbar-btn icon-only report" id="gbar-report" onclick="openReportModal()" title="Report a problem">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ REPORT MODAL ═══ -->
-<div id="report-modal">
-  <div class="report-box">
-    <div class="report-title">
-      <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-      Report a Problem
-    </div>
-    <div class="report-sub" id="report-sub">What's wrong with this game?</div>
-    <div class="report-reasons" id="report-reasons">
-      <div class="report-reason" onclick="selectReason(this, 'Game won\'t load')">
-        <div class="report-reason-dot"></div>
-        <span class="report-reason-label">🚫 Game won't load</span>
-      </div>
-      <div class="report-reason" onclick="selectReason(this, 'Broken or glitchy')">
-        <div class="report-reason-dot"></div>
-        <span class="report-reason-label">🐛 Broken or glitchy</span>
-      </div>
-      <div class="report-reason" onclick="selectReason(this, 'Black / blank screen')">
-        <div class="report-reason-dot"></div>
-        <span class="report-reason-label">⬛ Black / blank screen</span>
-      </div>
-      <div class="report-reason" onclick="selectReason(this, 'Inappropriate content')">
-        <div class="report-reason-dot"></div>
-        <span class="report-reason-label">⚠️ Inappropriate content</span>
-      </div>
-      <div class="report-reason" onclick="selectReason(this, 'Other issue')">
-        <div class="report-reason-dot"></div>
-        <span class="report-reason-label">💬 Other issue</span>
-      </div>
-    </div>
-    <div class="report-actions">
-      <button class="report-cancel" onclick="closeReportModal()">Cancel</button>
-      <button class="report-submit" id="report-submit-btn" onclick="submitReport()" disabled>Send Report</button>
     </div>
   </div>
 </div>
@@ -653,7 +548,6 @@ const GENRE_COLORS = {
 function getGlowColor(genres) {
     if (!genres || genres.length === 0) return '#4f7cff';
     if (genres.length === 1) return GENRE_COLORS[genres[0]] || '#4f7cff';
-    // Multiple genres: pick randomly each render
     const pick = genres[Math.floor(Math.random() * genres.length)];
     return GENRE_COLORS[pick] || '#4f7cff';
 }
@@ -796,20 +690,6 @@ window.toggleBar = () => {
     document.getElementById('toggle-label').textContent = barCollapsed ? 'Show bar' : 'Hide bar';
 };
 
-window.toggleFullscreen = () => {
-    const overlay = document.getElementById('game-overlay');
-    if (!document.fullscreenElement) {
-        overlay.requestFullscreen().catch(()=>{});
-        document.getElementById('fs-icon').innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';
-    } else {
-        document.exitFullscreen().catch(()=>{});
-    }
-};
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement)
-        document.getElementById('fs-icon').innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
-});
-
 window.doVote = async (type) => {
     if (!activeGameId) return;
     const prev = activeVote;
@@ -943,7 +823,6 @@ window.handleSearchKey = (e) => {
     }
 };
 
-// Close dropdown when clicking outside
 document.addEventListener('mousedown', (e) => {
     if (!e.target.closest('.topbar-search-wrap')) hideDropdown();
 });
@@ -1060,66 +939,6 @@ onSnapshot(announceRef, snap => {
 });
 
 setTimeout(()=>{ const f=document.getElementById('site-footer'); if(f) f.style.opacity='1'; }, 1800);
-
-// ── REPORT SYSTEM ─────────────────────────────────────────────────────────────
-let selectedReason = null;
-
-window.openReportModal = () => {
-    selectedReason = null;
-    document.querySelectorAll('.report-reason').forEach(el => el.classList.remove('selected'));
-    document.getElementById('report-submit-btn').disabled = true;
-    document.getElementById('report-sub').textContent = 'What is wrong with this game?';
-    document.getElementById('report-reasons').style.display = 'flex';
-    const submitBtn = document.getElementById('report-submit-btn');
-    submitBtn.style.display = '';
-    submitBtn.textContent = 'Send Report';
-    document.querySelector('.report-cancel').textContent = 'Cancel';
-    document.getElementById('report-modal').classList.add('active');
-};
-
-window.closeReportModal = () => {
-    document.getElementById('report-modal').classList.remove('active');
-};
-
-window.selectReason = (el, reason) => {
-    document.querySelectorAll('.report-reason').forEach(r => r.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedReason = reason;
-    document.getElementById('report-submit-btn').disabled = false;
-};
-
-window.submitReport = async () => {
-    if (!activeGameId || !selectedReason) return;
-    const game = GAMES.find(g => g.id === activeGameId);
-    const submitBtn = document.getElementById('report-submit-btn');
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
-    try {
-        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        await addDoc(collection(db, 'reports'), {
-            gameId:   activeGameId,
-            gameName: game ? game.name : activeGameId,
-            reason:   selectedReason,
-            timestamp: serverTimestamp(),
-            resolved: false,
-        });
-        const reportBtn = document.getElementById('gbar-report');
-        reportBtn.classList.add('sent');
-        reportBtn.title = 'Report sent — thanks!';
-        document.getElementById('report-sub').textContent = 'Report sent! We will look into it.';
-        document.getElementById('report-reasons').style.display = 'none';
-        submitBtn.style.display = 'none';
-        document.querySelector('.report-cancel').textContent = 'Close';
-        setTimeout(() => { closeReportModal(); }, 1800);
-    } catch(e) {
-        submitBtn.textContent = 'Error — try again';
-        submitBtn.disabled = false;
-    }
-};
-
-document.getElementById('report-modal').addEventListener('click', (e) => {
-    if (e.target === document.getElementById('report-modal')) closeReportModal();
-});
 </script>
 </body>
 </html>
