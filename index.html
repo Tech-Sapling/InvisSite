@@ -26,6 +26,15 @@ body::-webkit-scrollbar { display: none; }
     --sidebar-col: 52px;
     --page-pad: 28px;
     --page-max: 1440px;
+
+    /* Genre icon colors */
+    --color-all:      #4f7cff;
+    --color-io:       #00e5ff;
+    --color-shooter:  #ff4f4f;
+    --color-racing:   #ff9f00;
+    --color-casual:   #ffd600;
+    --color-puzzle:   #b04fff;
+    --color-survival: #00e676;
 }
 
 /* ── TOPBAR ───────────────────────────────────────────── */
@@ -152,8 +161,25 @@ body::-webkit-scrollbar { display: none; }
 .genre-item:hover { background: rgba(79,124,255,0.1); }
 .genre-item.active { background: rgba(79,124,255,0.18); border-left-color: var(--accent); }
 .genre-icon { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.genre-icon svg { width: 16px; height: 16px; fill: none; stroke: var(--text-dim); color: var(--text-dim); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s, color .2s; }
-.genre-item.active .genre-icon svg, .genre-item:hover .genre-icon svg { stroke: #fff; color: #fff; }
+.genre-icon svg { width: 16px; height: 16px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: opacity .2s; }
+
+/* Genre-specific icon colors — default state (dim) */
+.genre-item[data-genre="all"]      .genre-icon svg { stroke: var(--color-all);      opacity: 0.45; }
+.genre-item[data-genre="io"]       .genre-icon svg { stroke: var(--color-io);       opacity: 0.45; }
+.genre-item[data-genre="shooter"]  .genre-icon svg { stroke: var(--color-shooter);  opacity: 0.45; }
+.genre-item[data-genre="racing"]   .genre-icon svg { stroke: var(--color-racing);   opacity: 0.45; }
+.genre-item[data-genre="casual"]   .genre-icon svg { stroke: var(--color-casual);   opacity: 0.45; }
+.genre-item[data-genre="puzzle"]   .genre-icon svg { stroke: var(--color-puzzle);   opacity: 0.45; }
+.genre-item[data-genre="survival"] .genre-icon svg { stroke: var(--color-survival); opacity: 0.45; }
+
+/* Active / hover — full brightness */
+.genre-item.active .genre-icon svg,
+.genre-item:hover  .genre-icon svg { opacity: 1; }
+
+/* Special fill-based icons keep their fill color */
+.genre-item[data-genre="all"] .genre-icon svg circle,
+.genre-item[data-genre="all"] .genre-icon svg [fill="currentColor"] { fill: var(--color-all); stroke: none; }
+
 .genre-label { font-size: 13px; font-weight: 600; color: var(--text-dim); transition: color .2s, opacity .2s; }
 .genre-item.active .genre-label, .genre-item:hover .genre-label { color: #fff; }
 .sidebar.collapsed .genre-label { opacity: 0; pointer-events: none; }
@@ -343,34 +369,57 @@ body::-webkit-scrollbar { display: none; }
     </span>
   </div>
   <div class="genre-list">
-    <div class="genre-item active" data-label="All Games" onclick="setGenre('all',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg></span>
+
+    <div class="genre-item active" data-genre="all" data-label="All Games" onclick="setGenre('all',this)">
+      <span class="genre-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg>
+      </span>
       <span class="genre-label">All Games</span>
     </div>
-    <div class="genre-item" data-label=".IO Games" onclick="setGenre('io',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg></span>
+
+    <div class="genre-item" data-genre="io" data-label=".IO Games" onclick="setGenre('io',this)">
+      <span class="genre-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg>
+      </span>
       <span class="genre-label">.IO Games</span>
     </div>
-    <div class="genre-item" data-label="Shooter" onclick="setGenre('shooter',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/></svg></span>
+
+    <div class="genre-item" data-genre="shooter" data-label="Shooter" onclick="setGenre('shooter',this)">
+      <span class="genre-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/></svg>
+      </span>
       <span class="genre-label">Shooter</span>
     </div>
-    <div class="genre-item" data-label="Racing" onclick="setGenre('racing',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span>
+
+    <div class="genre-item" data-genre="racing" data-label="Racing" onclick="setGenre('racing',this)">
+      <span class="genre-icon">
+        <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+      </span>
       <span class="genre-label">Racing</span>
     </div>
-    <div class="genre-item" data-label="Casual" onclick="setGenre('casual',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+
+    <div class="genre-item" data-genre="casual" data-label="Casual" onclick="setGenre('casual',this)">
+      <span class="genre-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </span>
       <span class="genre-label">Casual</span>
     </div>
-    <div class="genre-item" data-label="Puzzle" onclick="setGenre('puzzle',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg></span>
+
+    <div class="genre-item" data-genre="puzzle" data-label="Puzzle" onclick="setGenre('puzzle',this)">
+      <span class="genre-icon">
+        <svg viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg>
+      </span>
       <span class="genre-label">Puzzle</span>
     </div>
-    <div class="genre-item" data-label="Other" onclick="setGenre('other',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24" style="stroke:none"><circle cx="5" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="19" cy="12" r="1.5" fill="currentColor"/></svg></span>
-      <span class="genre-label">Other</span>
+
+    <div class="genre-item" data-genre="survival" data-label="Survival" onclick="setGenre('survival',this)">
+      <span class="genre-icon">
+        <!-- Shield + heartbeat = survival -->
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/><polyline points="8,12 10,14 13,10 15,12"/></svg>
+      </span>
+      <span class="genre-label">Survival</span>
     </div>
+
   </div>
 </div>
 <div class="announce-box" id="announce-box" style="display:none">
@@ -408,43 +457,55 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GAMES LIST
+// showOnFrontPage = true  → appears in the "All Games" grid on the home page
+// showOnFrontPage = false → hidden from the "All Games" grid; still findable
+//                           via its genre tab or search
+// NOTE: showOnFrontPage has NO effect on the "For You" section (that is always
+//       driven purely by likes/popularity).
+// ─────────────────────────────────────────────────────────────────────────────
 const GAMES = [
-    { id:'bloxd',      name:'Bloxd.io',           url:'https://bloxd.io',                                                        img:'https://imgs.crazygames.com/bloxdhop-io_16x9/20250829023851/bloxdhop-io_16x9-cover?metadata=none&quality=60&height=7609', genres:['io'],               hero:true, desc:'Build, explore and battle across multiple game modes.', tags:['Multiplayer','Building','Battle'] },
-    { id:'veck',       name:'Veck.IO',             url:'https://veck.io',                                                         img:'https://veckio.io/data/image/posts/veck-io-banner1.jpg', genres:['io'], desc:'Fast-paced .IO action — grow, compete and dominate the leaderboard.', tags:['Multiplayer','.IO'] },
-    { id:'lolbeans',   name:'LOLBeans',            url:'https://lolbeans.io/',                                                    img:'https://yt3.googleusercontent.com/ytc/AIdro_myLc0_xlmBlAYAyJPuzIsb05JRiN96iAMF-zRIuwuIeQ=s900-c-k-c0x00ffffff-no-rj', genres:['io','casual'], desc:'Chaotic fall-guys style racing with jellybean characters.', tags:['Racing','Casual','.IO','Funny'] },
-    { id:'deadshot',   name:'Deadshot',            url:'https://deadshot.io',                                                     img:'https://deadshot.io/promo/thumbnail.png', genres:['shooter'], desc:'A fast-paced first-person shooter right in your browser.', tags:['Shooter','FPS','Multiplayer'] },
-    { id:'smashkarts', name:'Smash Karts',         url:'https://smashkarts.io',                                                   img:'https://imgs.crazygames.com/smash-karts_16x9/20260210123937/smash-karts_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['io','racing'], desc:'Kart racing with weapons and power-ups.', tags:['Racing','.IO','Multiplayer','Action'] },
-    { id:'zombsroyale',name:'ZombsRoyale.io',      url:'https://zombsroyale.io/',                                                 img:'https://imgs.crazygames.com/games/zombsroyaleio/cover-1587299840102.png?format=auto&quality=70&metadata=none', genres:['io','shooter'], desc:'Fast-paced battle royale — drop in, loot up, be last standing.', tags:['Battle Royale','.IO','Shooter','Multiplayer'] },
-    { id:'stack',      name:'STACK',               url:'https://www.coolmathgames.com/sites/default/files/public_games/50382/',   img:'https://androidcommunity.com/wp-content/uploads/2016/02/featured-stack.jpg', genres:['casual'], desc:'Stack blocks as high as you can. Simple but addictive.', tags:['Casual','Puzzle'] },
-    { id:'snub',       name:'Snub Browser',        url:'https://browse.therealsnubby.com/',                                       img:'https://i.imgur.com/V9f9mqS.png', genres:['other'], desc:'A full web browser you can use right inside your browser tab.', tags:['Utility','Other'] },
-    { id:'shell',      name:'Shell Shockers',      url:'https://shellshock.io',                                                   img:'https://imgs.crazygames.com/shellshockersio_16x9/20260203211252/shellshockersio_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['shooter'], desc:'FPS where you play as an egg armed with guns.', tags:['Shooter','FPS','Multiplayer'] },
-    { id:'subway',     name:'Subway Surfers',      url:'https://files.ufreegame.net/1024/Subway-Surfers-Zurich/',                 img:'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/img_9060.jpeg', genres:['casual'], desc:'Run, dodge and surf through the subway in this iconic endless runner.', tags:['Runner','Casual'] },
-    { id:'digdig',     name:'Digdig.io',           url:'https://digdig.io/',                                                      img:'https://www.gamekarma.com/images/games/1002.png', genres:['io'], desc:'Dig through the earth, collect gems and battle underground.', tags:['.IO','Multiplayer'] },
-    { id:'jumpshell',  name:'Jumping Shell',       url:'https://freetoplayz.github.io/jumping-shell/',                            img:'https://jumpingshellgame.github.io/images/logo.png', genres:['casual','puzzle'], desc:'Nest in and out of shells to solve brain-bending puzzles.', tags:['Casual','Puzzle','Brain Game'] },
-    { id:'freezeria',  name:'Papas Freezeria',     url:'https://www.coolmathgames.com/sites/default/files/public_games/48987/',   img:'https://www.coolmathgames.com/sites/default/files/PapasFreezeria_OG-logo.jpg', genres:['casual'], desc:'Take orders and build the perfect frozen treats.', tags:['Casual','Cooking','Classic'] },
-    { id:'monkeymart', name:'Monkey Mart',         url:'https://jasongamesdev.github.io/monkey-mart/',                            img:'https://blockblastunblocked.com/_next/static/media/monkey_mart_why_play_1.40cf50aa.png', genres:['casual'], desc:'Run your own supermarket as a monkey in this idle game.', tags:['Casual','Idle','Management'] },
-    { id:'drivemad',   name:'Drive Mad',           url:'https://gamecollections.me/game/3kh0-assets-main/drive-mad/',             img:'https://play-lh.googleusercontent.com/4-7O5Vo6EorRcn2ZGndNzwzaPLBbR4LfVEP0gBspwV3S1tVHouunOoyDTV5Ij7bYXS0=w526-h296-rw', genres:['racing','casual','puzzle'], desc:'Conquer brutal physics-based obstacles in your trusty yellow truck.', tags:['Racing','Casual','Puzzle','Physics'] },
-    { id:'snake',      name:'Snake',               url:'https://googlesnakemods.com/v/current/',                                  img:'https://cdn2.pog.com/cloudimage/342343/file/w380h285_retina_webp-9647dee8926d91a5853d9f8c1542732c.webp', genres:['casual'], desc:'The timeless classic — eat, grow, and try not to eat yourself.', tags:['Casual','Classic','Arcade'] },
-    { id:'hexanaut',   name:'Hexanaut.io',         url:'https://hexanaut.io/',                                                    img:'https://imgs.crazygames.com/games/hexanaut-io/cover-1647616033546.png?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['io'], desc:'Do not die and expand your territory of hexagons. Destroy others by crossing their path.', tags:['Casual','Classic','IO'] },
-    { id:'helpnobrake',name:'HELP! NO BRAKE!',     url:'https://itch.io/embed-upload/6749357',                                    img:'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2531960/capsule_616x353.jpg?t=1718326546', genres:['racing','casual','puzzle'], desc:'your car wont brake anymore. So better clear all the levels to get it fixed I guess..', tags:['Puzzle','Racing','Car'] },
-    { id:'fnaf',       name:"FNAF 1",              url:'https://run3.io/popgame/fnaf/fnaf1/',                                     img:'https://i.redd.it/5xpa2xnwsflb1.jpg', genres:['puzzle'], desc:"Survive until 6AM at Freddy Fazbear's Pizza.", tags:['Puzzle','Horror','Survival'] },
-    { id:'fnaf2',      name:"FNAF 2",              url:'https://run3.io/popgame/fnaf/fnaf2.html',                                 img:'https://store-images.s-microsoft.com/image/apps.60385.13578174030071833.ced2a7cf-09b3-4d12-8621-229829d1aa41.66df75dd-fd3d-46de-8a85-5278023c30a2?q=90&w=480&h=270', genres:['puzzle'], desc:'The withered animatronics are back and more terrifying.', tags:['Puzzle','Horror','Survival'] },
-    { id:'fnaf3',      name:"FNAF 3",              url:'https://run3.io/popgame/fnaf/fnaf3.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/2/2b/FNAF3Artwork.png', genres:['puzzle'], desc:'One animatronic, one chance to survive the horror attraction.', tags:['Puzzle','Horror','Survival'] },
-    { id:'fnaf4',      name:"FNAF 4",              url:'https://run3.io/popgame/fnaf/fnaf4.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/d/de/FNAF4Artwork.png', genres:['puzzle'], desc:'Survive nightmarish animatronics with only a flashlight.', tags:['Puzzle','Horror','Survival'] },
-    { id:'yohoho',     name:"YoHoHo.io",           url:'https://yohoho.io/',                                                      img:'https://yohoho.io/img/banner1200x630.jpg', genres:['casual','shooter','io'], desc:'Fight pirates with yer cutlass and survive the battle royale!', tags:['Royale','Battling','Fun'] },
-    { id:'retrobowl',  name:'Retro Bowl',          url:'https://game316009.konggames.com/gamez/0031/6009/live/index.html',        img:'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919', genres:['puzzle','casual'], desc:'Lead your team to Retro Bowl glory in addictive retro football.', tags:['Puzzle','Casual','Sports','Retro'] },
-    { id:'spacewave',  name:'Space Wave',          url:'https://crazygames.cdn.msnfun.com/9nm5764dbppg/v8/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwMUQ5MzQ0Q0RDNTU2ODUzM0ExODIyRjZERDZBNjkwMCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjlubTU3NjRkYnBwZyIsInZhbHVlIjp7fX19', img:'https://i.ytimg.com/vi/0L885f9nUI8/maxresdefault.jpg', genres:['puzzle','casual'], desc:'Wave around as a little chip shaped ship!', tags:['Puzzle','Casual','Retro'] },
-    { id:'upwarp',     name:'Upwarp',              url:'https://h5.meegames.com/games/9646486834/upwarp/index.html',              img:'https://img.arcadrome.com/7529ad66-d516-48b9-a6a9-80af0db67076/banner.png', genres:['puzzle'], desc:'Flip gravity and warp through increasingly tricky puzzle levels.', tags:['Puzzle','Platformer','Brain Game'] },
+    { id:'bloxd',      name:'Bloxd.io',           showOnFrontPage: true,  url:'https://bloxd.io',                                                        img:'https://imgs.crazygames.com/bloxdhop-io_16x9/20250829023851/bloxdhop-io_16x9-cover?metadata=none&quality=60&height=7609', genres:['io'],               desc:'Build, explore and battle across multiple game modes.',               tags:['Multiplayer','Building','Battle'] },
+    { id:'veck',       name:'Veck.IO',             showOnFrontPage: true,  url:'https://veck.io',                                                         img:'https://veckio.io/data/image/posts/veck-io-banner1.jpg',                                                                genres:['io'],               desc:'Fast-paced .IO action — grow, compete and dominate the leaderboard.', tags:['Multiplayer','.IO'] },
+    { id:'lolbeans',   name:'LOLBeans',            showOnFrontPage: true,  url:'https://lolbeans.io/',                                                    img:'https://yt3.googleusercontent.com/ytc/AIdro_myLc0_xlmBlAYAyJPuzIsb05JRiN96iAMF-zRIuwuIeQ=s900-c-k-c0x00ffffff-no-rj',                         genres:['io','casual'],      desc:'Chaotic fall-guys style racing with jellybean characters.',            tags:['Racing','Casual','.IO','Funny'] },
+    { id:'deadshot',   name:'Deadshot',            showOnFrontPage: true,  url:'https://deadshot.io',                                                     img:'https://deadshot.io/promo/thumbnail.png',                                                                               genres:['shooter'],          desc:'A fast-paced first-person shooter right in your browser.',             tags:['Shooter','FPS','Multiplayer'] },
+    { id:'smashkarts', name:'Smash Karts',         showOnFrontPage: true,  url:'https://smashkarts.io',                                                   img:'https://imgs.crazygames.com/smash-karts_16x9/20260210123937/smash-karts_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop',       genres:['io','racing'],      desc:'Kart racing with weapons and power-ups.',                             tags:['Racing','.IO','Multiplayer','Action'] },
+    { id:'zombsroyale',name:'ZombsRoyale.io',      showOnFrontPage: true,  url:'https://zombsroyale.io/',                                                 img:'https://imgs.crazygames.com/games/zombsroyaleio/cover-1587299840102.png?format=auto&quality=70&metadata=none',            genres:['io','shooter'],     desc:'Fast-paced battle royale — drop in, loot up, be last standing.',      tags:['Battle Royale','.IO','Shooter','Multiplayer'] },
+    { id:'stack',      name:'STACK',               showOnFrontPage: true,  url:'https://www.coolmathgames.com/sites/default/files/public_games/50382/',   img:'https://androidcommunity.com/wp-content/uploads/2016/02/featured-stack.jpg',                                             genres:['casual'],           desc:'Stack blocks as high as you can. Simple but addictive.',              tags:['Casual','Puzzle'] },
+    { id:'snub',       name:'Snub Browser',        showOnFrontPage: false, url:'https://browse.therealsnubby.com/',                                       img:'https://i.imgur.com/V9f9mqS.png',                                                                                       genres:['casual'],           desc:'A full web browser you can use right inside your browser tab.',       tags:['Utility','Casual'] },
+    { id:'shell',      name:'Shell Shockers',      showOnFrontPage: true,  url:'https://shellshock.io',                                                   img:'https://imgs.crazygames.com/shellshockersio_16x9/20260203211252/shellshockersio_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['shooter'],          desc:'FPS where you play as an egg armed with guns.',                       tags:['Shooter','FPS','Multiplayer'] },
+    { id:'subway',     name:'Subway Surfers',      showOnFrontPage: true,  url:'https://files.ufreegame.net/1024/Subway-Surfers-Zurich/',                 img:'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/img_9060.jpeg',              genres:['casual'],           desc:'Run, dodge and surf through the subway in this iconic endless runner.',tags:['Runner','Casual'] },
+    { id:'digdig',     name:'Digdig.io',           showOnFrontPage: true,  url:'https://digdig.io/',                                                      img:'https://www.gamekarma.com/images/games/1002.png',                                                                       genres:['io'],               desc:'Dig through the earth, collect gems and battle underground.',          tags:['.IO','Multiplayer'] },
+    { id:'jumpshell',  name:'Jumping Shell',       showOnFrontPage: true,  url:'https://freetoplayz.github.io/jumping-shell/',                            img:'https://jumpingshellgame.github.io/images/logo.png',                                                                    genres:['casual','puzzle'],  desc:'Nest in and out of shells to solve brain-bending puzzles.',           tags:['Casual','Puzzle','Brain Game'] },
+    { id:'freezeria',  name:'Papas Freezeria',     showOnFrontPage: false,  url:'https://www.coolmathgames.com/sites/default/files/public_games/48987/',   img:'https://www.coolmathgames.com/sites/default/files/PapasFreezeria_OG-logo.jpg',                                         genres:['casual'],           desc:'Take orders and build the perfect frozen treats.',                    tags:['Casual','Cooking','Classic'] },
+    { id:'monkeymart', name:'Monkey Mart',         showOnFrontPage: true,  url:'https://jasongamesdev.github.io/monkey-mart/',                            img:'https://blockblastunblocked.com/_next/static/media/monkey_mart_why_play_1.40cf50aa.png',                              genres:['casual'],           desc:'Run your own supermarket as a monkey in this idle game.',             tags:['Casual','Idle','Management'] },
+    { id:'drivemad',   name:'Drive Mad',           showOnFrontPage: true,  url:'https://gamecollections.me/game/3kh0-assets-main/drive-mad/',             img:'https://play-lh.googleusercontent.com/4-7O5Vo6EorRcn2ZGndNzwzaPLBbR4LfVEP0gBspwV3S1tVHouunOoyDTV5Ij7bYXS0=w526-h296-rw', genres:['racing','casual','puzzle'], desc:'Conquer brutal physics-based obstacles in your trusty yellow truck.', tags:['Racing','Casual','Puzzle','Physics'] },
+    { id:'snake',      name:'Snake',               showOnFrontPage: true,  url:'https://googlesnakemods.com/v/current/',                                  img:'https://cdn2.pog.com/cloudimage/342343/file/w380h285_retina_webp-9647dee8926d91a5853d9f8c1542732c.webp',             genres:['casual'],           desc:'The timeless classic — eat, grow, and try not to eat yourself.',      tags:['Casual','Classic','Arcade'] },
+    { id:'hexanaut',   name:'Hexanaut.io',         showOnFrontPage: true,  url:'https://hexanaut.io/',                                                    img:'https://imgs.crazygames.com/games/hexanaut-io/cover-1647616033546.png?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['io'],          desc:'Do not die and expand your territory of hexagons.',                   tags:['Casual','Classic','IO'] },
+    { id:'helpnobrake',name:'HELP! NO BRAKE!',     showOnFrontPage: false,  url:'https://itch.io/embed-upload/6749357',                                    img:'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2531960/capsule_616x353.jpg?t=1718326546',          genres:['racing','casual','puzzle'], desc:'Your car wont brake anymore. Clear all the levels to get it fixed!', tags:['Puzzle','Racing','Car'] },
+    { id:'fnaf',       name:"FNAF 1",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf1/',                                     img:'https://i.redd.it/5xpa2xnwsflb1.jpg',                                                                                  genres:['puzzle','survival'],desc:"Survive until 6AM at Freddy Fazbear's Pizza.",                         tags:['Survival','Horror','Puzzle'] },
+    { id:'fnaf2',      name:"FNAF 2",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf2.html',                                 img:'https://store-images.s-microsoft.com/image/apps.60385.13578174030071833.ced2a7cf-09b3-4d12-8621-229829d1aa41.66df75dd-fd3d-46de-8a85-5278023c30a2?q=90&w=480&h=270', genres:['puzzle','survival'], desc:'The withered animatronics are back and more terrifying.',           tags:['Survival','Horror','Puzzle'] },
+    { id:'fnaf3',      name:"FNAF 3",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf3.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/2/2b/FNAF3Artwork.png',                                                       genres:['puzzle','survival'],desc:'One animatronic, one chance to survive the horror attraction.',         tags:['Survival','Horror','Puzzle'] },
+    { id:'fnaf4',      name:"FNAF 4",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf4.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/d/de/FNAF4Artwork.png',                                                       genres:['puzzle','survival'],desc:'Survive nightmarish animatronics with only a flashlight.',              tags:['Survival','Horror','Puzzle'] },
+    { id:'yohoho',     name:"YoHoHo.io",           showOnFrontPage: true,  url:'https://yohoho.io/',                                                      img:'https://yohoho.io/img/banner1200x630.jpg',                                                                              genres:['casual','shooter','io'], desc:'Fight pirates with yer cutlass and survive the battle royale!',  tags:['Royale','Battling','Fun'] },
+    { id:'retrobowl',  name:'Retro Bowl',          showOnFrontPage: true,  url:'https://game316009.konggames.com/gamez/0031/6009/live/index.html',        img:'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919', genres:['puzzle','casual'], desc:'Lead your team to Retro Bowl glory in addictive retro football.',   tags:['Puzzle','Casual','Sports','Retro'] },
+    { id:'spacewave',  name:'Space Wave',          showOnFrontPage: true,  url:'https://crazygames.cdn.msnfun.com/9nm5764dbppg/v8/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwMUQ5MzQ0Q0RDNTU2ODUzM0ExODIyRjZERDZBNjkwMCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjlubTU3NjRkYnBwZyIsInZhbHVlIjp7fX19', img:'https://i.ytimg.com/vi/0L885f9nUI8/maxresdefault.jpg', genres:['puzzle','casual'], desc:'Wave around as a little chip shaped ship!',                          tags:['Puzzle','Casual','Retro'] },
+    { id:'upwarp',     name:'Upwarp',              showOnFrontPage: true,  url:'https://h5.meegames.com/games/9646486834/upwarp/index.html',              img:'https://img.arcadrome.com/7529ad66-d516-48b9-a6a9-80af0db67076/banner.png',                                            genres:['puzzle'],           desc:'Flip gravity and warp through increasingly tricky puzzle levels.',     tags:['Puzzle','Platformer','Brain Game'] },
+    { id:'poorbunny',  name:'POOR BUNNY!',         showOnFrontPage: true,  url:'https://poorbunny2.io/game/PoorBunny/',                                   img:'https://poorbunnygame.com/data/image/posts/poor-bunny3.png',                                                                  genres:['casual'],           desc:'UH OH!! You are a poor little bunny facing obstacles!',              tags:['Action','Platformer','2 Player'] },
+    { id:'StickmanC2', name:'Stickman Climb! 2',   showOnFrontPage: true,  url:'https://game.enjoy4fun.com/stickmanclimb2/v1/index.html?uid=cb7u1g6rsfesr7vv63d0&amp;channel-id=3487216655', img:'https://i.ytimg.com/vi/uaNjMad_T-k/maxresdefault.jpg', genres:['casual'],  desc:'Come across various and unique types of obstacles!',                  tags:['Stickman','Obstacles','Climbing'] },
+    { id:'LittleAlchemy2', name:'Little Alchemy 2',showOnFrontPage: true,  url:'http://littlealchemy2.com/',                                             img:'https://littlealchemy2.com/static/img/little-alchemy-2-fb-thumbnail.jpg',                                             genres:['casual'],           desc:'Combine things together! Form life, planes, anything you can think of!', tags:['Creative','Casual','Forming'] },
+    { id:'Gulper',     name:'Gulper.io',           showOnFrontPage: true,  url:'https://gulper.io/',                                                      img:'https://imgs.crazygames.com/games/gulper-io/cover_16x9-1722864711255.png?metadata=none&quality=60&height=5227',        genres:['io'],               desc:'An IO snake game! Get others or get destroyed!',                      tags:['Snake','IO','Pvp'] },
 ];
 
 const VARIANTS = ['v-a','v-b','v-c','v-d','v-e'];
 const GENRE_META = {
-    io:      { l:'.IO Games', svg:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/>' },
-    shooter: { l:'Shooter',   svg:'<circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/>' },
-    racing:  { l:'Racing',    svg:'<path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>' },
-    casual:  { l:'Casual',    svg:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>' },
-    puzzle:  { l:'Puzzle',    svg:'<path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/>' },
-    other:   { l:'Other',     svg:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>' },
+    io:       { l:'.IO Games', color:'#00e5ff', svg:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/>' },
+    shooter:  { l:'Shooter',   color:'#ff4f4f', svg:'<circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/>' },
+    racing:   { l:'Racing',    color:'#ff9f00', svg:'<path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>' },
+    casual:   { l:'Casual',    color:'#ffd600', svg:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>' },
+    puzzle:   { l:'Puzzle',    color:'#b04fff', svg:'<path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/>' },
+    survival: { l:'Survival',  color:'#00e676', svg:'<path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/><polyline points="8,12 10,14 13,10 15,12"/>' },
 };
 
 const HEARTBEAT_EXPIRY = 90000;
@@ -656,7 +717,7 @@ function renderAll() {
     if (genre !== 'all') {
         const res = GAMES.filter(g=>g.genres.includes(genre));
         const meta = GENRE_META[genre];
-        html = `<div class="genre-view-header anim-section"><div class="genre-view-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="#4f7cff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">${meta.svg}</svg></div><div><div class="genre-view-title">${meta.l}</div><div class="genre-view-count">${res.length} game${res.length!==1?'s':''}</div></div></div>`;
+        html = `<div class="genre-view-header anim-section"><div class="genre-view-icon-wrap" style="background:${meta.color}1a;border-color:${meta.color}44"><svg viewBox="0 0 24 24" fill="none" stroke="${meta.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">${meta.svg}</svg></div><div><div class="genre-view-title">${meta.l}</div><div class="genre-view-count">${res.length} game${res.length!==1?'s':''}</div></div></div>`;
         html += res.length
             ? `<div class="grid-3 anim-section">${res.map(g=>mkCard(g,'genre-card')).join('')}</div>`
             : `<div class="empty-state anim-section"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#33334a" stroke-width="1.5" stroke-linecap="round">${meta.svg}</svg></div><p>No ${meta.l} games yet</p></div>`;
@@ -664,18 +725,22 @@ function renderAll() {
         return;
     }
 
+    // ── For You: ALL games sorted by likes (showOnFrontPage doesn't affect this) ──
     const allByLikes = [...GAMES].sort((a,b)=>(likesCounts[b.id]||0)-(likesCounts[a.id]||0));
     const topGameId  = allByLikes[0]?.id;
     const fyHero = allByLikes[0];
     const fyRest = allByLikes.filter(g=>g.id!==fyHero.id);
     html += `<div class="section anim-section">${mkHeader('For You','https://img.itch.zone/aW1nLzE5OTMwNzM2LnBuZw==/original/9xRpPp.png','Popular')}<div class="grid-foryou">${mkCard(fyHero,'hero-left',true)}${fyRest.slice(0,4).map(g=>mkCard(g,'small',g.id===topGameId)).join('')}</div></div>`;
 
+    // ── Recently Played: showOnFrontPage also not filtered here (user chose these) ──
     if (recentlyPlayed.length) {
         const recG = recentlyPlayed.map(id=>GAMES.find(g=>g.id===id)).filter(Boolean);
         html += `<div class="section anim-section">${mkHeader('Recently Played',null,null)}<div class="grid-4">${recG.map(g=>mkCard(g,'g4-card',g.id===topGameId)).join('')}</div></div>`;
     }
 
-    const shuffled = [...GAMES].sort(()=>Math.random()-0.5);
+    // ── All Games: ONLY games with showOnFrontPage === true ──
+    const frontPageGames = [...GAMES].filter(g => g.showOnFrontPage !== false);
+    const shuffled = [...frontPageGames].sort(()=>Math.random()-0.5);
     const wideAt = new Set([0,7,14]), tallAt = new Set([3,10,17]);
     const allCards = shuffled.map((g,i) => {
         if (wideAt.has(i%18)) return mkCard(g,'wide-card',g.id===topGameId);
