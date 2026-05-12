@@ -14,7 +14,7 @@ html, body {
 body::-webkit-scrollbar { display: none; }
 :root {
     --bg-card:    #121b40;
-    --bg-card-b:  #0f1a38;
+    --bg-card-b:  #0f1730;
     --bg-card-c:  #15203e;
     --bg-sidebar: #0e1736;
     --bg-header:  #0d1530;
@@ -27,7 +27,6 @@ body::-webkit-scrollbar { display: none; }
     --page-pad: 28px;
     --page-max: 1440px;
 
-    /* Genre icon colors */
     --color-all:      #4f7cff;
     --color-io:       #00e5ff;
     --color-shooter:  #ff4f4f;
@@ -101,6 +100,55 @@ body::-webkit-scrollbar { display: none; }
 .topbar-search-icon svg { width: 15px; height: 15px; fill: none; stroke: #7da4ff; stroke-width: 2; stroke-linecap: round; }
 .topbar-search-wrap:focus-within .topbar-search-icon { opacity: .85; }
 
+/* ── AUTOCOMPLETE DROPDOWN ───────────────────────────── */
+#search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    background: #0f1a3e;
+    border: 1.5px solid rgba(79,124,255,0.35);
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 9999;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(79,124,255,0.08);
+    display: none;
+    animation: dropdownIn .18s var(--ease) both;
+}
+@keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+#search-dropdown.visible { display: block; }
+.dd-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: background .15s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.dd-item:last-child { border-bottom: none; }
+.dd-item:hover, .dd-item.focused {
+    background: rgba(79,124,255,0.14);
+}
+.dd-item-img {
+    width: 36px; height: 36px; border-radius: 7px;
+    object-fit: cover; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.dd-item-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.dd-item-name { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dd-item-name mark { background: none; color: var(--accent); font-weight: 900; }
+.dd-item-genres { display: flex; gap: 4px; }
+.dd-item-genre-chip {
+    font-size: 10px; font-weight: 700; padding: 2px 6px;
+    border-radius: 20px; white-space: nowrap;
+}
+.dd-empty {
+    padding: 14px 16px;
+    font-size: 13px; color: var(--text-dim);
+    display: flex; align-items: center; gap: 8px;
+}
+
 /* ── PAGE WRAPPER ─────────────────────────────────────── */
 #page-root {
     max-width: var(--page-max);
@@ -163,7 +211,6 @@ body::-webkit-scrollbar { display: none; }
 .genre-icon { width: 26px; height: 26px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .genre-icon svg { width: 16px; height: 16px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: opacity .2s; }
 
-/* Genre-specific icon colors — default state (dim) */
 .genre-item[data-genre="all"]      .genre-icon svg { stroke: var(--color-all);      opacity: 0.45; }
 .genre-item[data-genre="io"]       .genre-icon svg { stroke: var(--color-io);       opacity: 0.45; }
 .genre-item[data-genre="shooter"]  .genre-icon svg { stroke: var(--color-shooter);  opacity: 0.45; }
@@ -172,11 +219,9 @@ body::-webkit-scrollbar { display: none; }
 .genre-item[data-genre="puzzle"]   .genre-icon svg { stroke: var(--color-puzzle);   opacity: 0.45; }
 .genre-item[data-genre="survival"] .genre-icon svg { stroke: var(--color-survival); opacity: 0.45; }
 
-/* Active / hover — full brightness */
 .genre-item.active .genre-icon svg,
 .genre-item:hover  .genre-icon svg { opacity: 1; }
 
-/* Special fill-based icons keep their fill color */
 .genre-item[data-genre="all"] .genre-icon svg circle,
 .genre-item[data-genre="all"] .genre-icon svg [fill="currentColor"] { fill: var(--color-all); stroke: none; }
 
@@ -212,8 +257,25 @@ body::-webkit-scrollbar { display: none; }
 .game-card.v-e { background: #111928; border-color: rgba(255,255,255,0.04); }
 
 /* ── GAME CARDS ───────────────────────────────────────── */
-.game-card { display: flex; flex-direction: column; cursor: pointer; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255,255,255,0.04); padding: 0; text-align: left; width: 100%; height: 100%; transition: transform .28s var(--ease), border-color .28s var(--ease), box-shadow .28s var(--ease); animation: fadeUp .38s var(--ease) both; }
-.game-card:hover { transform: translateY(-5px) scale(1.013); border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79,124,255,0.35), 0 24px 48px rgba(0,0,0,0.55), 0 0 36px rgba(79,124,255,0.18); }
+.game-card {
+    display: flex; flex-direction: column; cursor: pointer;
+    border-radius: 12px; overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.04);
+    padding: 0; text-align: left; width: 100%; height: 100%;
+    transition: transform .28s var(--ease), border-color .28s var(--ease), box-shadow .28s var(--ease);
+    animation: fadeUp .38s var(--ease) both;
+    /* Ambient glow is set via --glow-color per card inline style */
+    --glow-color: #4f7cff;
+}
+.game-card:hover {
+    transform: translateY(-5px) scale(1.013);
+    border-color: var(--glow-color);
+    box-shadow:
+        0 0 0 2px color-mix(in srgb, var(--glow-color) 45%, transparent),
+        0 24px 48px rgba(0,0,0,0.55),
+        0 0 40px color-mix(in srgb, var(--glow-color) 30%, transparent),
+        0 0 80px color-mix(in srgb, var(--glow-color) 12%, transparent);
+}
 .game-card:active { transform: translateY(-2px) scale(1.005); }
 .game-card .image-box { flex: 1; }
 .hero-left .image-box, .tall-card .image-box { position: relative; width: 100%; height: 100%; min-height: 260px; }
@@ -295,6 +357,67 @@ body::-webkit-scrollbar { display: none; }
 #bar-toggle:hover { opacity: 1; background: rgba(20,30,70,0.95); }
 #bar-toggle svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; transition: transform .3s var(--ease); }
 #bar-toggle.collapsed svg { transform: rotate(180deg); }
+
+/* ── REPORT BUTTON ────────────────────────────────────── */
+.gbar-btn.report { color: rgba(255,255,255,0.35); }
+.gbar-btn.report:hover { background: rgba(255,100,60,0.12); border-color: rgba(255,100,60,0.35); color: #ff6b4a; }
+.gbar-btn.report.sent { background: rgba(255,100,60,0.15); border-color: rgba(255,100,60,0.4); color: #ff6b4a; cursor: default; pointer-events: none; }
+
+/* ── REPORT MODAL ─────────────────────────────────────── */
+#report-modal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+    animation: fadeIn .18s ease both;
+}
+#report-modal.active { display: flex; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.report-box {
+    background: #111c42; border: 1.5px solid rgba(255,100,60,0.3);
+    border-radius: 16px; padding: 24px; width: 100%; max-width: 340px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 40px rgba(255,80,40,0.1);
+    animation: slideUp .22s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.report-title { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.report-title svg { width: 16px; height: 16px; fill: none; stroke: #ff6b4a; stroke-width: 2; stroke-linecap: round; }
+.report-sub { font-size: 12px; color: #7a8bb5; margin-bottom: 16px; }
+.report-reasons { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.report-reason {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 13px; border-radius: 10px; cursor: pointer;
+    border: 1.5px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+    transition: background .18s, border-color .18s;
+    user-select: none;
+}
+.report-reason:hover { background: rgba(255,100,60,0.1); border-color: rgba(255,100,60,0.35); }
+.report-reason.selected { background: rgba(255,100,60,0.15); border-color: rgba(255,100,60,0.5); }
+.report-reason-dot {
+    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .18s, background .18s;
+}
+.report-reason.selected .report-reason-dot { border-color: #ff6b4a; background: #ff6b4a; }
+.report-reason.selected .report-reason-dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
+.report-reason-label { font-size: 13px; font-weight: 600; color: #c5d0f0; }
+.report-actions { display: flex; gap: 8px; }
+.report-cancel {
+    flex: 1; padding: 10px; border-radius: 9px; border: 1.5px solid rgba(255,255,255,0.08);
+    background: transparent; color: #7a8bb5; font-size: 13px; font-weight: 700;
+    font-family: inherit; cursor: pointer; transition: background .18s, color .18s;
+}
+.report-cancel:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.report-submit {
+    flex: 2; padding: 10px; border-radius: 9px; border: none;
+    background: linear-gradient(135deg, #ff5533, #ff3a1a);
+    color: #fff; font-size: 13px; font-weight: 900; font-family: inherit;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(255,80,40,0.35);
+    transition: opacity .18s, transform .18s;
+}
+.report-submit:hover { opacity: .9; transform: translateY(-1px); }
+.report-submit:disabled { opacity: .45; cursor: default; transform: none; }
 </style>
 </head>
 <body>
@@ -314,7 +437,17 @@ body::-webkit-scrollbar { display: none; }
     <span class="topbar-search-icon">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
     </span>
-    <input class="topbar-search" id="search-input" type="text" placeholder="Search games…" oninput="handleSearch(this.value)">
+    <input
+      class="topbar-search"
+      id="search-input"
+      type="text"
+      placeholder="Search games…"
+      autocomplete="off"
+      oninput="handleSearchInput(this.value)"
+      onkeydown="handleSearchKey(event)"
+      onfocus="showDropdown()"
+    >
+    <div id="search-dropdown"></div>
   </div>
 </div>
 
@@ -353,6 +486,46 @@ body::-webkit-scrollbar { display: none; }
       <button class="gbar-btn icon-only" onclick="toggleFullscreen()" title="Fullscreen">
         <svg id="fs-icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
+      <button class="gbar-btn icon-only report" id="gbar-report" onclick="openReportModal()" title="Report a problem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REPORT MODAL ═══ -->
+<div id="report-modal">
+  <div class="report-box">
+    <div class="report-title">
+      <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+      Report a Problem
+    </div>
+    <div class="report-sub" id="report-sub">What's wrong with this game?</div>
+    <div class="report-reasons" id="report-reasons">
+      <div class="report-reason" onclick="selectReason(this, 'Game won\'t load')">
+        <div class="report-reason-dot"></div>
+        <span class="report-reason-label">🚫 Game won't load</span>
+      </div>
+      <div class="report-reason" onclick="selectReason(this, 'Broken or glitchy')">
+        <div class="report-reason-dot"></div>
+        <span class="report-reason-label">🐛 Broken or glitchy</span>
+      </div>
+      <div class="report-reason" onclick="selectReason(this, 'Black / blank screen')">
+        <div class="report-reason-dot"></div>
+        <span class="report-reason-label">⬛ Black / blank screen</span>
+      </div>
+      <div class="report-reason" onclick="selectReason(this, 'Inappropriate content')">
+        <div class="report-reason-dot"></div>
+        <span class="report-reason-label">⚠️ Inappropriate content</span>
+      </div>
+      <div class="report-reason" onclick="selectReason(this, 'Other issue')">
+        <div class="report-reason-dot"></div>
+        <span class="report-reason-label">💬 Other issue</span>
+      </div>
+    </div>
+    <div class="report-actions">
+      <button class="report-cancel" onclick="closeReportModal()">Cancel</button>
+      <button class="report-submit" id="report-submit-btn" onclick="submitReport()" disabled>Send Report</button>
     </div>
   </div>
 </div>
@@ -369,57 +542,34 @@ body::-webkit-scrollbar { display: none; }
     </span>
   </div>
   <div class="genre-list">
-
     <div class="genre-item active" data-genre="all" data-label="All Games" onclick="setGenre('all',this)">
-      <span class="genre-icon">
-        <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg></span>
       <span class="genre-label">All Games</span>
     </div>
-
     <div class="genre-item" data-genre="io" data-label=".IO Games" onclick="setGenre('io',this)">
-      <span class="genre-icon">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg></span>
       <span class="genre-label">.IO Games</span>
     </div>
-
     <div class="genre-item" data-genre="shooter" data-label="Shooter" onclick="setGenre('shooter',this)">
-      <span class="genre-icon">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/></svg></span>
       <span class="genre-label">Shooter</span>
     </div>
-
     <div class="genre-item" data-genre="racing" data-label="Racing" onclick="setGenre('racing',this)">
-      <span class="genre-icon">
-        <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span>
       <span class="genre-label">Racing</span>
     </div>
-
     <div class="genre-item" data-genre="casual" data-label="Casual" onclick="setGenre('casual',this)">
-      <span class="genre-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
       <span class="genre-label">Casual</span>
     </div>
-
     <div class="genre-item" data-genre="puzzle" data-label="Puzzle" onclick="setGenre('puzzle',this)">
-      <span class="genre-icon">
-        <svg viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg></span>
       <span class="genre-label">Puzzle</span>
     </div>
-
     <div class="genre-item" data-genre="survival" data-label="Survival" onclick="setGenre('survival',this)">
-      <span class="genre-icon">
-        <!-- Shield + heartbeat = survival -->
-        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/><polyline points="8,12 10,14 13,10 15,12"/></svg>
-      </span>
+      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/><polyline points="8,12 10,14 13,10 15,12"/></svg></span>
       <span class="genre-label">Survival</span>
     </div>
-
   </div>
 </div>
 <div class="announce-box" id="announce-box" style="display:none">
@@ -457,46 +607,56 @@ const app = initializeApp({
 });
 const db = getFirestore(app);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GAMES LIST
-// showOnFrontPage = true  → appears in the "All Games" grid on the home page
-// showOnFrontPage = false → hidden from the "All Games" grid; still findable
-//                           via its genre tab or search
-// NOTE: showOnFrontPage has NO effect on the "For You" section (that is always
-//       driven purely by likes/popularity).
-// ─────────────────────────────────────────────────────────────────────────────
 const GAMES = [
-    { id:'bloxd',      name:'Bloxd.io',           showOnFrontPage: true,  url:'https://bloxd.io',                                                        img:'https://imgs.crazygames.com/bloxdhop-io_16x9/20250829023851/bloxdhop-io_16x9-cover?metadata=none&quality=60&height=7609', genres:['io','survival'],               desc:'Build, explore and battle across multiple game modes.',               tags:['Multiplayer','Building','Battle'] },
-    { id:'veck',       name:'Veck.IO',             showOnFrontPage: true,  url:'https://veck.io',                                                         img:'https://veckio.io/data/image/posts/veck-io-banner1.jpg',                                                                genres:['io','survival'],               desc:'Fast-paced .IO action — grow, compete and dominate the leaderboard.', tags:['Multiplayer','.IO'] },
-    { id:'lolbeans',   name:'LOLBeans',            showOnFrontPage: true,  url:'https://lolbeans.io/',                                                    img:'https://yt3.googleusercontent.com/ytc/AIdro_myLc0_xlmBlAYAyJPuzIsb05JRiN96iAMF-zRIuwuIeQ=s900-c-k-c0x00ffffff-no-rj',                         genres:['io','casual'],      desc:'Chaotic fall-guys style racing with jellybean characters.',            tags:['Racing','Casual','.IO','Funny'] },
-    { id:'deadshot',   name:'Deadshot',            showOnFrontPage: true,  url:'https://deadshot.io',                                                     img:'https://deadshot.io/promo/thumbnail.png',                                                                               genres:['shooter'],          desc:'A fast-paced first-person shooter right in your browser.',             tags:['Shooter','FPS','Multiplayer'] },
-    { id:'smashkarts', name:'Smash Karts',         showOnFrontPage: true,  url:'https://smashkarts.io',                                                   img:'https://imgs.crazygames.com/smash-karts_16x9/20260210123937/smash-karts_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop',       genres:['io','racing'],      desc:'Kart racing with weapons and power-ups.',                             tags:['Racing','.IO','Multiplayer','Action'] },
-    { id:'zombsroyale',name:'ZombsRoyale.io',      showOnFrontPage: true,  url:'https://zombsroyale.io/',                                                 img:'https://imgs.crazygames.com/games/zombsroyaleio/cover-1587299840102.png?format=auto&quality=70&metadata=none',            genres:['io','shooter'],     desc:'Fast-paced battle royale — drop in, loot up, be last standing.',      tags:['Battle Royale','.IO','Shooter','Multiplayer'] },
-    { id:'stack',      name:'STACK',               showOnFrontPage: true,  url:'https://www.coolmathgames.com/sites/default/files/public_games/50382/',   img:'https://androidcommunity.com/wp-content/uploads/2016/02/featured-stack.jpg',                                             genres:['casual'],           desc:'Stack blocks as high as you can. Simple but addictive.',              tags:['Casual','Puzzle'] },
-    { id:'snub',       name:'Snub Browser',        showOnFrontPage: false, url:'https://browse.therealsnubby.com/',                                       img:'https://i.imgur.com/V9f9mqS.png',                                                                                       genres:['casual'],           desc:'A full web browser you can use right inside your browser tab.',       tags:['Utility','Casual'] },
-    { id:'shell',      name:'Shell Shockers',      showOnFrontPage: true,  url:'https://shellshock.io',                                                   img:'https://imgs.crazygames.com/shellshockersio_16x9/20260203211252/shellshockersio_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['shooter'],          desc:'FPS where you play as an egg armed with guns.',                       tags:['Shooter','FPS','Multiplayer'] },
-    { id:'subway',     name:'Subway Surfers',      showOnFrontPage: true,  url:'https://files.ufreegame.net/1024/Subway-Surfers-Zurich/',                 img:'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/img_9060.jpeg',              genres:['casual'],           desc:'Run, dodge and surf through the subway in this iconic endless runner.',tags:['Runner','Casual'] },
-    { id:'digdig',     name:'Digdig.io',           showOnFrontPage: true,  url:'https://digdig.io/',                                                      img:'https://www.gamekarma.com/images/games/1002.png',                                                                       genres:['io','survival'],               desc:'Dig through the earth, collect gems and battle underground.',          tags:['.IO','Multiplayer'] },
-    { id:'jumpshell',  name:'Jumping Shell',       showOnFrontPage: true,  url:'https://freetoplayz.github.io/jumping-shell/',                            img:'https://jumpingshellgame.github.io/images/logo.png',                                                                    genres:['casual','puzzle'],  desc:'Nest in and out of shells to solve brain-bending puzzles.',           tags:['Casual','Puzzle','Brain Game'] },
-    { id:'freezeria',  name:'Papas Freezeria',     showOnFrontPage: false,  url:'https://www.coolmathgames.com/sites/default/files/public_games/48987/',   img:'https://www.coolmathgames.com/sites/default/files/PapasFreezeria_OG-logo.jpg',                                         genres:['casual'],           desc:'Take orders and build the perfect frozen treats.',                    tags:['Casual','Cooking','Classic'] },
-    { id:'monkeymart', name:'Monkey Mart',         showOnFrontPage: true,  url:'https://jasongamesdev.github.io/monkey-mart/',                            img:'https://blockblastunblocked.com/_next/static/media/monkey_mart_why_play_1.40cf50aa.png',                              genres:['casual'],           desc:'Run your own supermarket as a monkey in this idle game.',             tags:['Casual','Idle','Management'] },
-    { id:'drivemad',   name:'Drive Mad',           showOnFrontPage: true,  url:'https://gamecollections.me/game/3kh0-assets-main/drive-mad/',             img:'https://play-lh.googleusercontent.com/4-7O5Vo6EorRcn2ZGndNzwzaPLBbR4LfVEP0gBspwV3S1tVHouunOoyDTV5Ij7bYXS0=w526-h296-rw', genres:['racing','casual','puzzle'], desc:'Conquer brutal physics-based obstacles in your trusty yellow truck.', tags:['Racing','Casual','Puzzle','Physics'] },
-    { id:'snake',      name:'Snake',               showOnFrontPage: true,  url:'https://googlesnakemods.com/v/current/',                                  img:'https://cdn2.pog.com/cloudimage/342343/file/w380h285_retina_webp-9647dee8926d91a5853d9f8c1542732c.webp',             genres:['casual'],           desc:'The timeless classic — eat, grow, and try not to eat yourself.',      tags:['Casual','Classic','Arcade'] },
-    { id:'hexanaut',   name:'Hexanaut.io',         showOnFrontPage: true,  url:'https://hexanaut.io/',                                                    img:'https://imgs.crazygames.com/games/hexanaut-io/cover-1647616033546.png?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['io'],          desc:'Do not die and expand your territory of hexagons.',                   tags:['Casual','Classic','IO'] },
-    { id:'helpnobrake',name:'HELP! NO BRAKE!',     showOnFrontPage: false,  url:'https://itch.io/embed-upload/6749357',                                    img:'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2531960/capsule_616x353.jpg?t=1718326546',          genres:['racing','casual','puzzle'], desc:'Your car wont brake anymore. Clear all the levels to get it fixed!', tags:['Puzzle','Racing','Car'] },
-    { id:'fnaf',       name:"FNAF 1",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf1/',                                     img:'https://i.redd.it/5xpa2xnwsflb1.jpg',                                                                                  genres:['puzzle','survival'],desc:"Survive until 6AM at Freddy Fazbear's Pizza.",                         tags:['Survival','Horror','Puzzle'] },
-    { id:'fnaf2',      name:"FNAF 2",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf2.html',                                 img:'https://store-images.s-microsoft.com/image/apps.60385.13578174030071833.ced2a7cf-09b3-4d12-8621-229829d1aa41.66df75dd-fd3d-46de-8a85-5278023c30a2?q=90&w=480&h=270', genres:['puzzle','survival'], desc:'The withered animatronics are back and more terrifying.',           tags:['Survival','Horror','Puzzle'] },
-    { id:'fnaf3',      name:"FNAF 3",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf3.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/2/2b/FNAF3Artwork.png',                                                       genres:['puzzle','survival'],desc:'One animatronic, one chance to survive the horror attraction.',         tags:['Survival','Horror','Puzzle'] },
-    { id:'fnaf4',      name:"FNAF 4",              showOnFrontPage: false,  url:'https://run3.io/popgame/fnaf/fnaf4.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/d/de/FNAF4Artwork.png',                                                       genres:['puzzle','survival'],desc:'Survive nightmarish animatronics with only a flashlight.',              tags:['Survival','Horror','Puzzle'] },
-    { id:'yohoho',     name:"YoHoHo.io",           showOnFrontPage: true,  url:'https://yohoho.io/',                                                      img:'https://yohoho.io/img/banner1200x630.jpg',                                                                              genres:['casual','survival','io'], desc:'Fight pirates with yer cutlass and survive the battle royale!',  tags:['Royale','Battling','Fun'] },
-    { id:'retrobowl',  name:'Retro Bowl',          showOnFrontPage: true,  url:'https://game316009.konggames.com/gamez/0031/6009/live/index.html',        img:'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919', genres:['puzzle','casual'], desc:'Lead your team to Retro Bowl glory in addictive retro football.',   tags:['Puzzle','Casual','Sports','Retro'] },
-    { id:'spacewave',  name:'Space Wave',          showOnFrontPage: true,  url:'https://crazygames.cdn.msnfun.com/9nm5764dbppg/v8/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwMUQ5MzQ0Q0RDNTU2ODUzM0ExODIyRjZERDZBNjkwMCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjlubTU3NjRkYnBwZyIsInZhbHVlIjp7fX19', img:'https://i.ytimg.com/vi/0L885f9nUI8/maxresdefault.jpg', genres:['puzzle','casual'], desc:'Wave around as a little chip shaped ship!',                          tags:['Puzzle','Casual','Retro'] },
-    { id:'upwarp',     name:'Upwarp',              showOnFrontPage: true,  url:'https://h5.meegames.com/games/9646486834/upwarp/index.html',              img:'https://img.arcadrome.com/7529ad66-d516-48b9-a6a9-80af0db67076/banner.png',                                            genres:['puzzle'],           desc:'Flip gravity and warp through increasingly tricky puzzle levels.',     tags:['Puzzle','Platformer','Brain Game'] },
-    { id:'poorbunny',  name:'POOR BUNNY!',         showOnFrontPage: true,  url:'https://poorbunny2.io/game/PoorBunny/',                                   img:'https://poorbunnygame.com/data/image/posts/poor-bunny3.png',                                                                  genres:['casual','survival'],           desc:'UH OH!! You are a poor little bunny facing obstacles!',              tags:['Action','Platformer','2 Player'] },
-    { id:'StickmanC2', name:'Stickman Climb! 2',   showOnFrontPage: true,  url:'https://game.enjoy4fun.com/stickmanclimb2/v1/index.html?uid=cb7u1g6rsfesr7vv63d0&amp;channel-id=3487216655', img:'https://i.ytimg.com/vi/uaNjMad_T-k/maxresdefault.jpg', genres:['casual'],  desc:'Come across various and unique types of obstacles!',                  tags:['Stickman','Obstacles','Climbing'] },
-    { id:'LittleAlchemy2', name:'Little Alchemy 2',showOnFrontPage: true,  url:'http://littlealchemy2.com/',                                             img:'https://littlealchemy2.com/static/img/little-alchemy-2-fb-thumbnail.jpg',                                             genres:['casual'],           desc:'Combine things together! Form life, planes, anything you can think of!', tags:['Creative','Casual','Forming'] },
-    { id:'Gulper',     name:'Gulper.io',           showOnFrontPage: true,  url:'https://gulper.io/',                                                      img:'https://imgs.crazygames.com/games/gulper-io/cover_16x9-1722864711255.png?metadata=none&quality=60&height=5227',        genres:['io','survival'],               desc:'An IO snake game! Get others or get destroyed!',                      tags:['Snake','IO','Pvp'] },
+    { id:'bloxd',      name:'Bloxd.io',           showOnFrontPage: true,  url:'https://bloxd.io',                                                        img:'https://imgs.crazygames.com/bloxdhop-io_16x9/20250829023851/bloxdhop-io_16x9-cover?metadata=none&quality=60&height=7609', genres:['io','survival'],               tags:['Multiplayer','Building','Battle'] },
+    { id:'veck',       name:'Veck.IO',             showOnFrontPage: true,  url:'https://veck.io',                                                         img:'https://veckio.io/data/image/posts/veck-io-banner1.jpg',                                                                genres:['io','survival'],               tags:['Multiplayer','.IO'] },
+    { id:'lolbeans',   name:'LOLBeans',            showOnFrontPage: true,  url:'https://lolbeans.io/',                                                    img:'https://yt3.googleusercontent.com/ytc/AIdro_myLc0_xlmBlAYAyJPuzIsb05JRiN96iAMF-zRIuwuIeQ=s900-c-k-c0x00ffffff-no-rj',                         genres:['io','casual'],      tags:['Racing','Casual','.IO','Funny'] },
+    { id:'deadshot',   name:'Deadshot',            showOnFrontPage: true,  url:'https://deadshot.io',                                                     img:'https://deadshot.io/promo/thumbnail.png',                                                                               genres:['shooter'],          tags:['Shooter','FPS','Multiplayer'] },
+    { id:'smashkarts', name:'Smash Karts',         showOnFrontPage: true,  url:'https://smashkarts.io',                                                   img:'https://imgs.crazygames.com/smash-karts_16x9/20260210123937/smash-karts_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop',       genres:['io','racing'],      tags:['Racing','.IO','Multiplayer','Action'] },
+    { id:'zombsroyale',name:'ZombsRoyale.io',      showOnFrontPage: true,  url:'https://zombsroyale.io/',                                                 img:'https://imgs.crazygames.com/games/zombsroyaleio/cover-1587299840102.png?format=auto&quality=70&metadata=none',            genres:['io','shooter'],     tags:['Battle Royale','.IO','Shooter','Multiplayer'] },
+    { id:'stack',      name:'STACK',               showOnFrontPage: true,  url:'https://www.coolmathgames.com/sites/default/files/public_games/50382/',   img:'https://androidcommunity.com/wp-content/uploads/2016/02/featured-stack.jpg',                                             genres:['casual'],           tags:['Casual','Puzzle'] },
+    { id:'snub',       name:'Snub Browser',        showOnFrontPage: false, url:'https://browse.therealsnubby.com/',                                       img:'https://i.imgur.com/V9f9mqS.png',                                                                                       genres:['casual'],           tags:['Utility','Casual'] },
+    { id:'shell',      name:'Shell Shockers',      showOnFrontPage: true,  url:'https://shellshock.io',                                                   img:'https://imgs.crazygames.com/shellshockersio_16x9/20260203211252/shellshockersio_16x9-cover?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['shooter'],          tags:['Shooter','FPS','Multiplayer'] },
+    { id:'subway',     name:'Subway Surfers',      showOnFrontPage: true,  url:'https://files.ufreegame.net/1024/Subway-Surfers-Zurich/',                 img:'https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/img_9060.jpeg',              genres:['casual'],           tags:['Runner','Casual'] },
+    { id:'digdig',     name:'Digdig.io',           showOnFrontPage: true,  url:'https://digdig.io/',                                                      img:'https://www.gamekarma.com/images/games/1002.png',                                                                       genres:['io','survival'],    tags:['.IO','Multiplayer'] },
+    { id:'jumpshell',  name:'Jumping Shell',       showOnFrontPage: true,  url:'https://freetoplayz.github.io/jumping-shell/',                            img:'https://jumpingshellgame.github.io/images/logo.png',                                                                    genres:['casual','puzzle'],  tags:['Casual','Puzzle','Brain Game'] },
+    { id:'freezeria',  name:'Papas Freezeria',     showOnFrontPage: false, url:'https://www.coolmathgames.com/sites/default/files/public_games/48987/',   img:'https://www.coolmathgames.com/sites/default/files/PapasFreezeria_OG-logo.jpg',                                         genres:['casual'],           tags:['Casual','Cooking','Classic'] },
+    { id:'monkeymart', name:'Monkey Mart',         showOnFrontPage: true,  url:'https://jasongamesdev.github.io/monkey-mart/',                            img:'https://blockblastunblocked.com/_next/static/media/monkey_mart_why_play_1.40cf50aa.png',                              genres:['casual'],           tags:['Casual','Idle','Management'] },
+    { id:'drivemad',   name:'Drive Mad',           showOnFrontPage: true,  url:'https://gamecollections.me/game/3kh0-assets-main/drive-mad/',             img:'https://play-lh.googleusercontent.com/4-7O5Vo6EorRcn2ZGndNzwzaPLBbR4LfVEP0gBspwV3S1tVHouunOoyDTV5Ij7bYXS0=w526-h296-rw', genres:['racing','casual','puzzle'], tags:['Racing','Casual','Puzzle','Physics'] },
+    { id:'snake',      name:'Snake',               showOnFrontPage: true,  url:'https://googlesnakemods.com/v/current/',                                  img:'https://cdn2.pog.com/cloudimage/342343/file/w380h285_retina_webp-9647dee8926d91a5853d9f8c1542732c.webp',             genres:['casual'],           tags:['Casual','Classic','Arcade'] },
+    { id:'hexanaut',   name:'Hexanaut.io',         showOnFrontPage: true,  url:'https://hexanaut.io/',                                                    img:'https://imgs.crazygames.com/games/hexanaut-io/cover-1647616033546.png?metadata=none&quality=100&width=1200&height=630&fit=crop', genres:['io'],          tags:['Casual','Classic','IO'] },
+    { id:'helpnobrake',name:'HELP! NO BRAKE!',     showOnFrontPage: false, url:'https://itch.io/embed-upload/6749357',                                    img:'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2531960/capsule_616x353.jpg?t=1718326546',          genres:['racing','casual','puzzle'], tags:['Puzzle','Racing','Car'] },
+    { id:'fnaf',       name:"FNAF 1",              showOnFrontPage: false, url:'https://run3.io/popgame/fnaf/fnaf1/',                                     img:'https://i.redd.it/5xpa2xnwsflb1.jpg',                                                                                  genres:['puzzle','survival'],tags:['Survival','Horror','Puzzle'] },
+    { id:'fnaf2',      name:"FNAF 2",              showOnFrontPage: false, url:'https://run3.io/popgame/fnaf/fnaf2.html',                                 img:'https://store-images.s-microsoft.com/image/apps.60385.13578174030071833.ced2a7cf-09b3-4d12-8621-229829d1aa41.66df75dd-fd3d-46de-8a85-5278023c30a2?q=90&w=480&h=270', genres:['puzzle','survival'], tags:['Survival','Horror','Puzzle'] },
+    { id:'fnaf3',      name:"FNAF 3",              showOnFrontPage: false, url:'https://run3.io/popgame/fnaf/fnaf3.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/2/2b/FNAF3Artwork.png',                                                       genres:['puzzle','survival'],tags:['Survival','Horror','Puzzle'] },
+    { id:'fnaf4',      name:"FNAF 4",              showOnFrontPage: false, url:'https://run3.io/popgame/fnaf/fnaf4.html',                                 img:'https://upload.wikimedia.org/wikipedia/en/d/de/FNAF4Artwork.png',                                                       genres:['puzzle','survival'],tags:['Survival','Horror','Puzzle'] },
+    { id:'yohoho',     name:"YoHoHo.io",           showOnFrontPage: true,  url:'https://yohoho.io/',                                                      img:'https://yohoho.io/img/banner1200x630.jpg',                                                                              genres:['casual','survival','io'], tags:['Royale','Battling','Fun'] },
+    { id:'retrobowl',  name:'Retro Bowl',          showOnFrontPage: true,  url:'https://game316009.konggames.com/gamez/0031/6009/live/index.html',        img:'https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/store/software/switch/70010000048336/e3c1297d2ec30fe72a657af60c416d10c68a784bc874cf28e19cdf9261956919', genres:['puzzle','casual'], tags:['Puzzle','Casual','Sports','Retro'] },
+    { id:'spacewave',  name:'Space Wave',          showOnFrontPage: true,  url:'https://crazygames.cdn.msnfun.com/9nm5764dbppg/v8/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIwMUQ5MzQ0Q0RDNTU2ODUzM0ExODIyRjZERDZBNjkwMCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjlubTU3NjRkYnBwZyIsInZhbHVlIjp7fX19', img:'https://i.ytimg.com/vi/0L885f9nUI8/maxresdefault.jpg', genres:['puzzle','casual'], tags:['Puzzle','Casual','Retro'] },
+    { id:'upwarp',     name:'Upwarp',              showOnFrontPage: true,  url:'https://h5.meegames.com/games/9646486834/upwarp/index.html',              img:'https://img.arcadrome.com/7529ad66-d516-48b9-a6a9-80af0db67076/banner.png',                                            genres:['puzzle'],           tags:['Puzzle','Platformer','Brain Game'] },
+    { id:'poorbunny',  name:'POOR BUNNY!',         showOnFrontPage: true,  url:'https://poorbunny2.io/game/PoorBunny/',                                   img:'https://poorbunnygame.com/data/image/posts/poor-bunny3.png',                                                          genres:['casual','survival'], tags:['Action','Platformer','2 Player'] },
+    { id:'StickmanC2', name:'Stickman Climb! 2',   showOnFrontPage: true,  url:'https://game.enjoy4fun.com/stickmanclimb2/v1/index.html?uid=cb7u1g6rsfesr7vv63d0&amp;channel-id=3487216655', img:'https://i.ytimg.com/vi/uaNjMad_T-k/maxresdefault.jpg', genres:['casual'],  tags:['Stickman','Obstacles','Climbing'] },
+    { id:'LittleAlchemy2', name:'Little Alchemy 2',showOnFrontPage: true,  url:'http://littlealchemy2.com/',                                             img:'https://littlealchemy2.com/static/img/little-alchemy-2-fb-thumbnail.jpg',                                             genres:['casual'],           tags:['Creative','Casual','Forming'] },
+    { id:'Gulper',     name:'Gulper.io',           showOnFrontPage: true,  url:'https://gulper.io/',                                                      img:'https://imgs.crazygames.com/games/gulper-io/cover_16x9-1722864711255.png?metadata=none&quality=60&height=5227',        genres:['io','survival'],    tags:['Snake','IO','Pvp'] },
 ];
+
+// ── GENRE COLORS ──────────────────────────────────────────────────────────────
+const GENRE_COLORS = {
+    io:       '#00e5ff',
+    shooter:  '#ff4f4f',
+    racing:   '#ff9f00',
+    casual:   '#ffd600',
+    puzzle:   '#b04fff',
+    survival: '#00e676',
+};
+
+function getGlowColor(genres) {
+    if (!genres || genres.length === 0) return '#4f7cff';
+    if (genres.length === 1) return GENRE_COLORS[genres[0]] || '#4f7cff';
+    // Multiple genres: pick randomly each render
+    const pick = genres[Math.floor(Math.random() * genres.length)];
+    return GENRE_COLORS[pick] || '#4f7cff';
+}
 
 const VARIANTS = ['v-a','v-b','v-c','v-d','v-e'];
 const GENRE_META = {
@@ -535,6 +695,8 @@ let activeVote     = null;
 let barCollapsed   = false;
 let voteUnsub      = null;
 let hbInterval     = null;
+let ddFocusIdx     = -1;
+let ddResults      = [];
 const variantMap = {};
 GAMES.forEach((g,i) => { variantMap[g.id] = VARIANTS[i % VARIANTS.length]; });
 
@@ -604,6 +766,8 @@ window.openGame = async (id) => {
         document.getElementById('gbar-like').classList.toggle('liked',    activeVote==='like');
         document.getElementById('gbar-dis').classList.toggle('disliked',  activeVote==='dis');
     });
+
+    hideDropdown();
 };
 
 window.closeGame = async () => {
@@ -683,6 +847,108 @@ document.addEventListener('keydown', e => {
         closeGame();
 });
 
+// ── AUTOCOMPLETE ──────────────────────────────────────────────────────────────
+const ddEl = document.getElementById('search-dropdown');
+const searchEl = document.getElementById('search-input');
+
+function getGenreChips(genres) {
+    return genres.slice(0,2).map(g => {
+        const c = GENRE_COLORS[g] || '#4f7cff';
+        return `<span class="dd-item-genre-chip" style="background:${c}1a;color:${c};border:1px solid ${c}44">${g}</span>`;
+    }).join('');
+}
+
+function highlightMatch(name, q) {
+    if (!q) return name;
+    const idx = name.toLowerCase().indexOf(q.toLowerCase());
+    if (idx === -1) return name;
+    return name.slice(0,idx) + '<mark>' + name.slice(idx, idx+q.length) + '</mark>' + name.slice(idx+q.length);
+}
+
+function renderDropdown(q) {
+    const trimmed = q.trim().toLowerCase();
+    if (!trimmed) { ddResults = []; hideDropdown(); return; }
+
+    ddResults = GAMES.filter(g =>
+        g.name.toLowerCase().includes(trimmed) ||
+        g.genres.some(gn => gn.includes(trimmed)) ||
+        (g.tags||[]).some(t => t.toLowerCase().includes(trimmed))
+    ).slice(0, 7);
+
+    if (ddResults.length === 0) {
+        ddEl.innerHTML = `<div class="dd-empty"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7a8bb5" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>No games found for "<strong style="color:#fff">${q}</strong>"</div>`;
+    } else {
+        ddEl.innerHTML = ddResults.map((g, i) => `
+            <div class="dd-item" data-idx="${i}" onmousedown="pickDropdown('${g.id}')">
+                <img class="dd-item-img" src="${g.img}" alt="${g.name}" onerror="this.style.display='none'">
+                <div class="dd-item-info">
+                    <div class="dd-item-name">${highlightMatch(g.name, trimmed)}</div>
+                    <div class="dd-item-genres">${getGenreChips(g.genres)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    ddFocusIdx = -1;
+    ddEl.classList.add('visible');
+}
+
+function hideDropdown() {
+    ddEl.classList.remove('visible');
+    ddFocusIdx = -1;
+}
+
+function setDdFocus(idx) {
+    const items = ddEl.querySelectorAll('.dd-item');
+    items.forEach(el => el.classList.remove('focused'));
+    if (idx >= 0 && idx < items.length) {
+        items[idx].classList.add('focused');
+        items[idx].scrollIntoView({ block:'nearest' });
+    }
+    ddFocusIdx = idx;
+}
+
+window.pickDropdown = (id) => {
+    hideDropdown();
+    searchEl.value = '';
+    currentSearch = '';
+    openGame(id);
+};
+
+window.showDropdown = () => {
+    if (searchEl.value.trim()) renderDropdown(searchEl.value);
+};
+
+window.handleSearchInput = (v) => {
+    currentSearch = v;
+    renderDropdown(v);
+    renderAll();
+};
+
+window.handleSearchKey = (e) => {
+    const items = ddEl.querySelectorAll('.dd-item');
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setDdFocus(Math.min(ddFocusIdx + 1, items.length - 1));
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setDdFocus(Math.max(ddFocusIdx - 1, 0));
+    } else if (e.key === 'Enter') {
+        if (ddFocusIdx >= 0 && ddResults[ddFocusIdx]) {
+            e.preventDefault();
+            pickDropdown(ddResults[ddFocusIdx].id);
+        }
+    } else if (e.key === 'Escape') {
+        hideDropdown();
+    }
+};
+
+// Close dropdown when clicking outside
+document.addEventListener('mousedown', (e) => {
+    if (!e.target.closest('.topbar-search-wrap')) hideDropdown();
+});
+
+// ── CARD BUILDER ──────────────────────────────────────────────────────────────
 function mkCard(g, wrapCls, isTop=false) {
     const v = variantMap[g.id] || 'v-a';
     const likes = likesCounts[g.id] || 0;
@@ -690,7 +956,8 @@ function mkCard(g, wrapCls, isTop=false) {
     const crown = isTop ? `<div class="crown-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M3 17L6 7L12 13L18 7L21 17H3Z" fill="#FFD700" stroke="#FFA000" stroke-width="1.2" stroke-linejoin="round"/><circle cx="3" cy="17" r="1.5" fill="#FFD700"/><circle cx="21" cy="17" r="1.5" fill="#FFD700"/><circle cx="12" cy="13" r="1.5" fill="#FFD700"/><line x1="3" y1="19" x2="21" y2="19" stroke="#FFA000" stroke-width="1.5" stroke-linecap="round"/></svg><span>Hot</span></div>` : '';
     const tags = (g.tags||[]).map(t => `<span class="tag-chip">${t}</span>`).join('');
     const tagRow = tags ? `<div class="tag-row"><div class="tag-row-inner">${tags}</div></div>` : '';
-    return `<div class="${wrapCls}"><div class="game-card ${v}" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
+    const glowColor = getGlowColor(g.genres);
+    return `<div class="${wrapCls}"><div class="game-card ${v}" style="--glow-color:${glowColor}" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
 }
 
 function mkHeader(title, imgSrc, pill) {
@@ -725,20 +992,17 @@ function renderAll() {
         return;
     }
 
-    // ── For You: ALL games sorted by likes (showOnFrontPage doesn't affect this) ──
     const allByLikes = [...GAMES].sort((a,b)=>(likesCounts[b.id]||0)-(likesCounts[a.id]||0));
     const topGameId  = allByLikes[0]?.id;
     const fyHero = allByLikes[0];
     const fyRest = allByLikes.filter(g=>g.id!==fyHero.id);
     html += `<div class="section anim-section">${mkHeader('For You','https://img.itch.zone/aW1nLzE5OTMwNzM2LnBuZw==/original/9xRpPp.png','Popular')}<div class="grid-foryou">${mkCard(fyHero,'hero-left',true)}${fyRest.slice(0,4).map(g=>mkCard(g,'small',g.id===topGameId)).join('')}</div></div>`;
 
-    // ── Recently Played: showOnFrontPage also not filtered here (user chose these) ──
     if (recentlyPlayed.length) {
         const recG = recentlyPlayed.map(id=>GAMES.find(g=>g.id===id)).filter(Boolean);
         html += `<div class="section anim-section">${mkHeader('Recently Played',null,null)}<div class="grid-4">${recG.map(g=>mkCard(g,'g4-card',g.id===topGameId)).join('')}</div></div>`;
     }
 
-    // ── All Games: ONLY games with showOnFrontPage === true ──
     const frontPageGames = [...GAMES].filter(g => g.showOnFrontPage !== false);
     const shuffled = [...frontPageGames].sort(()=>Math.random()-0.5);
     const wideAt = new Set([0,7,14]), tallAt = new Set([3,10,17]);
@@ -752,7 +1016,7 @@ function renderAll() {
     document.getElementById('content').innerHTML = html;
 }
 
-window.handleSearch  = v => { currentSearch = v; renderAll(); };
+window.handleSearch  = window.handleSearchInput;
 window.renderAll     = renderAll;
 window.setGenre      = (g, el) => {
     currentGenre = g;
@@ -796,6 +1060,66 @@ onSnapshot(announceRef, snap => {
 });
 
 setTimeout(()=>{ const f=document.getElementById('site-footer'); if(f) f.style.opacity='1'; }, 1800);
+
+// ── REPORT SYSTEM ─────────────────────────────────────────────────────────────
+let selectedReason = null;
+
+window.openReportModal = () => {
+    selectedReason = null;
+    document.querySelectorAll('.report-reason').forEach(el => el.classList.remove('selected'));
+    document.getElementById('report-submit-btn').disabled = true;
+    document.getElementById('report-sub').textContent = 'What is wrong with this game?';
+    document.getElementById('report-reasons').style.display = 'flex';
+    const submitBtn = document.getElementById('report-submit-btn');
+    submitBtn.style.display = '';
+    submitBtn.textContent = 'Send Report';
+    document.querySelector('.report-cancel').textContent = 'Cancel';
+    document.getElementById('report-modal').classList.add('active');
+};
+
+window.closeReportModal = () => {
+    document.getElementById('report-modal').classList.remove('active');
+};
+
+window.selectReason = (el, reason) => {
+    document.querySelectorAll('.report-reason').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedReason = reason;
+    document.getElementById('report-submit-btn').disabled = false;
+};
+
+window.submitReport = async () => {
+    if (!activeGameId || !selectedReason) return;
+    const game = GAMES.find(g => g.id === activeGameId);
+    const submitBtn = document.getElementById('report-submit-btn');
+    submitBtn.textContent = 'Sending...';
+    submitBtn.disabled = true;
+    try {
+        const { collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        await addDoc(collection(db, 'reports'), {
+            gameId:   activeGameId,
+            gameName: game ? game.name : activeGameId,
+            reason:   selectedReason,
+            timestamp: serverTimestamp(),
+            resolved: false,
+        });
+        const reportBtn = document.getElementById('gbar-report');
+        reportBtn.classList.add('sent');
+        reportBtn.title = 'Report sent — thanks!';
+        document.getElementById('report-sub').textContent = 'Report sent! We will look into it.';
+        document.getElementById('report-reasons').style.display = 'none';
+        submitBtn.style.display = 'none';
+        document.querySelector('.report-cancel').textContent = 'Close';
+        setTimeout(() => { closeReportModal(); }, 1800);
+    } catch(e) {
+        submitBtn.textContent = 'Error — try again';
+        submitBtn.disabled = false;
+    }
+};
+
+document.getElementById('report-modal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('report-modal')) closeReportModal();
+});
 </script>
 </body>
 </html>
