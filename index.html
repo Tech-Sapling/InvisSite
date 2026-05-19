@@ -105,49 +105,35 @@ body::-webkit-scrollbar { display: none; }
     position: absolute;
     top: calc(100% + 6px);
     left: 0; right: 0;
-    background: #0f1a3e;
-    border: 1.5px solid rgba(79,124,255,0.35);
-    border-radius: 12px;
+    background: #0d1530;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
     overflow: hidden;
     z-index: 9999;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(79,124,255,0.08);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
     display: none;
-    animation: dropdownIn .18s var(--ease) both;
+    animation: dropdownIn .15s var(--ease) both;
 }
 @keyframes dropdownIn {
-    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 #search-dropdown.visible { display: block; }
 .dd-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 12px;
     cursor: pointer;
-    transition: background .15s;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background .12s;
 }
-.dd-item:last-child { border-bottom: none; }
-.dd-item:hover, .dd-item.focused {
-    background: rgba(79,124,255,0.14);
+.dd-item:hover, .dd-item.focused { background: rgba(255,255,255,0.05); }
+.dd-item-name {
+    font-size: 13px; font-weight: 600; color: #d0d8f0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    flex: 1;
 }
-.dd-item-img {
-    width: 36px; height: 36px; border-radius: 7px;
-    object-fit: cover; flex-shrink: 0;
-    border: 1px solid rgba(255,255,255,0.08);
-}
-.dd-item-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-.dd-item-name { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dd-item-name mark { background: none; color: var(--accent); font-weight: 900; }
-.dd-item-genres { display: flex; gap: 4px; }
-.dd-item-genre-chip {
-    font-size: 10px; font-weight: 700; padding: 2px 6px;
-    border-radius: 20px; white-space: nowrap;
-}
-.dd-empty {
-    padding: 14px 16px;
-    font-size: 13px; color: var(--text-dim);
-    display: flex; align-items: center; gap: 8px;
-}
+.dd-item-name mark { background: none; color: #fff; font-weight: 800; }
+.dd-item-genre { font-size: 11px; color: var(--text-dim); font-weight: 500; flex-shrink: 0; }
+.dd-empty { padding: 12px 14px; font-size: 13px; color: var(--text-dim); }
 
 /* ── PAGE WRAPPER ─────────────────────────────────────── */
 #page-root {
@@ -171,6 +157,8 @@ body::-webkit-scrollbar { display: none; }
     padding: 22px var(--page-pad) var(--page-pad) 0;
 }
 .main::-webkit-scrollbar { display: none; }
+
+/* ── LEFT COLUMN: independent scroll ─────────────────── */
 .left-col {
     display: flex; flex-direction: column; gap: 12px;
     margin-right: 18px; flex-shrink: 0;
@@ -178,15 +166,33 @@ body::-webkit-scrollbar { display: none; }
     transition: width .32s var(--ease);
     height: 100%;
     overflow-y: auto; overflow-x: hidden;
-    scrollbar-width: none; -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79,124,255,0.25) transparent;
     padding: 22px 0 16px;
 }
-.left-col::-webkit-scrollbar { display: none; }
+.left-col::-webkit-scrollbar { width: 3px; }
+.left-col::-webkit-scrollbar-track { background: transparent; }
+.left-col::-webkit-scrollbar-thumb { background: rgba(79,124,255,0.25); border-radius: 10px; }
+.left-col::-webkit-scrollbar-thumb:hover { background: rgba(79,124,255,0.45); }
 
 /* ── ANNOUNCE ─────────────────────────────────────────── */
 .announce-box { background: var(--bg-sidebar); border-radius: 14px; border: 1px solid rgba(79,124,255,0.2); overflow: hidden; animation: fadeUp .4s var(--ease) both; }
 .announce-header { display: flex; align-items: center; gap: 6px; padding: 10px 14px 6px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #4f7cff; border-bottom: 1px solid rgba(79,124,255,0.12); }
 .announce-msg { padding: 10px 14px; font-size: 12.5px; font-weight: 500; color: #c5d0f0; line-height: 1.55; }
+
+/* Announcement image */
+.announce-img-wrap {
+    padding: 0 10px 10px;
+}
+.announce-img {
+    width: 100%;
+    max-height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(79,124,255,0.15);
+    display: block;
+}
+
 .poll-options { padding: 0 10px 10px; display: flex; flex-direction: column; gap: 6px; }
 .poll-btn { width: 100%; padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 12px; font-weight: 700; font-family: inherit; text-align: left; background: rgba(79,124,255,0.1); color: #a0b4ff; border: 1px solid rgba(79,124,255,0.2); transition: background .2s, color .2s, border-color .2s; position: relative; overflow: hidden; }
 .poll-btn:hover { background: rgba(79,124,255,0.2); color: #fff; border-color: rgba(79,124,255,0.4); }
@@ -428,53 +434,60 @@ body::-webkit-scrollbar { display: none; }
 <!-- ═══ MAIN LAYOUT ═══ -->
 <div id="page-root">
 <div class="layout">
+
+<!-- LEFT COLUMN: scrolls independently -->
 <div class="left-col">
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-toggle" onclick="toggleSidebar()">
-    <span class="sidebar-toggle-label">Categories</span>
-    <span class="toggle-arrow">
-      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><polyline points="8,2 4,6 8,10"/></svg>
-    </span>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar()">
+      <span class="sidebar-toggle-label">Categories</span>
+      <span class="toggle-arrow">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="12" height="12"><polyline points="8,2 4,6 8,10"/></svg>
+      </span>
+    </div>
+    <div class="genre-list">
+      <div class="genre-item active" data-genre="all" data-label="All Games" onclick="setGenre('all',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg></span>
+        <span class="genre-label">All Games</span>
+      </div>
+      <div class="genre-item" data-genre="io" data-label=".IO Games" onclick="setGenre('io',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg></span>
+        <span class="genre-label">.IO Games</span>
+      </div>
+      <div class="genre-item" data-genre="shooter" data-label="Shooter" onclick="setGenre('shooter',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/></svg></span>
+        <span class="genre-label">Shooter</span>
+      </div>
+      <div class="genre-item" data-genre="racing" data-label="Racing" onclick="setGenre('racing',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span>
+        <span class="genre-label">Racing</span>
+      </div>
+      <div class="genre-item" data-genre="casual" data-label="Casual" onclick="setGenre('casual',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+        <span class="genre-label">Casual</span>
+      </div>
+      <div class="genre-item" data-genre="puzzle" data-label="Puzzle" onclick="setGenre('puzzle',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg></span>
+        <span class="genre-label">Puzzle</span>
+      </div>
+      <div class="genre-item" data-genre="survival" data-label="Survival" onclick="setGenre('survival',this)">
+        <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/><polyline points="8,12 10,14 13,10 15,12"/></svg></span>
+        <span class="genre-label">Survival</span>
+      </div>
+    </div>
   </div>
-  <div class="genre-list">
-    <div class="genre-item active" data-genre="all" data-label="All Games" onclick="setGenre('all',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg></span>
-      <span class="genre-label">All Games</span>
+
+  <!-- Announcement box below sidebar, scrolls with left col -->
+  <div class="announce-box" id="announce-box" style="display:none">
+    <div class="announce-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#4f7cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>Admin</span>
     </div>
-    <div class="genre-item" data-genre="io" data-label=".IO Games" onclick="setGenre('io',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg></span>
-      <span class="genre-label">.IO Games</span>
+    <div class="announce-msg" id="announce-msg"></div>
+    <div class="announce-img-wrap" id="announce-img-wrap" style="display:none">
+      <img class="announce-img" id="announce-img" src="" alt="Announcement image">
     </div>
-    <div class="genre-item" data-genre="shooter" data-label="Shooter" onclick="setGenre('shooter',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/></svg></span>
-      <span class="genre-label">Shooter</span>
-    </div>
-    <div class="genre-item" data-genre="racing" data-label="Racing" onclick="setGenre('racing',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h16l2 4-2 6H5z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></span>
-      <span class="genre-label">Racing</span>
-    </div>
-    <div class="genre-item" data-genre="casual" data-label="Casual" onclick="setGenre('casual',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
-      <span class="genre-label">Casual</span>
-    </div>
-    <div class="genre-item" data-genre="puzzle" data-label="Puzzle" onclick="setGenre('puzzle',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg></span>
-      <span class="genre-label">Puzzle</span>
-    </div>
-    <div class="genre-item" data-genre="survival" data-label="Survival" onclick="setGenre('survival',this)">
-      <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.35C16.5 22.15 20 17.25 20 12V6L12 2z"/><polyline points="8,12 10,14 13,10 15,12"/></svg></span>
-      <span class="genre-label">Survival</span>
-    </div>
+    <div class="poll-options" id="poll-options"></div>
   </div>
-</div>
-<div class="announce-box" id="announce-box" style="display:none">
-  <div class="announce-header">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#4f7cff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>
-    <span>Admin</span>
-  </div>
-  <div class="announce-msg" id="announce-msg"></div>
-  <div class="poll-options" id="poll-options"></div>
-</div>
 </div>
 
 <div class="main">
@@ -538,7 +551,6 @@ const GAMES = [
     { id:'tribalsio',  name:'Tribals.io',          showOnFrontPage: true,  url:'https://tribals.io/',                                                      img:'https://cdn.webgamer.io/games/tribals-io/tribals-io.1280x.85pc.webp',                                                  genres:['survival','io'],    tags:['Exploration','Survival','Multiplayer'] },
 ];
 
-// ── GENRE COLORS ──────────────────────────────────────────────────────────────
 const GENRE_COLORS = {
     io:       '#00e5ff',
     shooter:  '#ff4f4f',
@@ -586,7 +598,6 @@ let likesCounts    = {};
 let recentlyPlayed = JSON.parse(localStorage.getItem('is_recent') || '[]');
 let currentGenre   = 'all';
 let currentSearch  = '';
-let loadedCount    = 0;
 let activeGameId   = null;
 let activeVote     = null;
 let barCollapsed   = false;
@@ -597,23 +608,25 @@ let ddResults      = [];
 const variantMap = {};
 GAMES.forEach((g,i) => { variantMap[g.id] = VARIANTS[i % VARIANTS.length]; });
 
+// Render immediately — don't wait for Firebase at all
+renderAll();
+
+// Then wire up Firebase listeners to update counts reactively
 GAMES.forEach(g => {
-    onSnapshot(doc(db,'games',g.id), snap => {
-        clickCounts[g.id] = snap.exists() ? (snap.data().clicks || 0) : 0;
-        likesCounts[g.id] = snap.exists() ? (snap.data().likes  || 0) : 0;
-        if (loadedCount < GAMES.length) {
-            loadedCount++;
-            if (loadedCount === GAMES.length) renderAll();
-            return;
-        }
-        document.querySelectorAll(`[data-likes="${g.id}"]`).forEach(el => {
-            const n = likesCounts[g.id] || 0;
-            const lbl = n >= 1000 ? (n/1000).toFixed(1)+'k' : n > 0 ? String(n) : '';
-            el.textContent = lbl;
-            const bar = el.closest('.status-bar');
-            if (bar) bar.style.display = lbl ? 'flex' : 'none';
-        });
-    });
+    try {
+        onSnapshot(doc(db,'games',g.id), snap => {
+            clickCounts[g.id] = snap.exists() ? (snap.data().clicks || 0) : 0;
+            likesCounts[g.id] = snap.exists() ? (snap.data().likes  || 0) : 0;
+            // Just patch the like counts in-place — no full re-render needed
+            document.querySelectorAll(`[data-likes="${g.id}"]`).forEach(el => {
+                const n = likesCounts[g.id] || 0;
+                const lbl = n >= 1000 ? (n/1000).toFixed(1)+'k' : n > 0 ? String(n) : '';
+                el.textContent = lbl;
+                const bar = el.closest('.status-bar');
+                if (bar) bar.style.display = lbl ? 'flex' : 'none';
+            });
+        }, () => {}); // silently ignore per-game errors
+    } catch(e) {}
 });
 
 window.openGame = async (id) => {
@@ -756,20 +769,18 @@ function renderDropdown(q) {
         g.name.toLowerCase().includes(trimmed) ||
         g.genres.some(gn => gn.includes(trimmed)) ||
         (g.tags||[]).some(t => t.toLowerCase().includes(trimmed))
-    ).slice(0, 7);
+    ).slice(0, 6);
 
     if (ddResults.length === 0) {
-        ddEl.innerHTML = `<div class="dd-empty"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7a8bb5" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>No games found for "<strong style="color:#fff">${q}</strong>"</div>`;
+        ddEl.innerHTML = `<div class="dd-empty">No results for "<strong style="color:#c5d0f0">${q}</strong>"</div>`;
     } else {
-        ddEl.innerHTML = ddResults.map((g, i) => `
-            <div class="dd-item" data-idx="${i}" onmousedown="pickDropdown('${g.id}')">
-                <img class="dd-item-img" src="${g.img}" alt="${g.name}" onerror="this.style.display='none'">
-                <div class="dd-item-info">
-                    <div class="dd-item-name">${highlightMatch(g.name, trimmed)}</div>
-                    <div class="dd-item-genres">${getGenreChips(g.genres)}</div>
-                </div>
-            </div>
-        `).join('');
+        ddEl.innerHTML = ddResults.map((g, i) => {
+            const genre = g.genres[0] || '';
+            return `<div class="dd-item" data-idx="${i}" onmousedown="pickDropdown('${g.id}')">
+                <span class="dd-item-name">${highlightMatch(g.name, trimmed)}</span>
+                <span class="dd-item-genre">${genre}</span>
+            </div>`;
+        }).join('');
     }
 
     ddFocusIdx = -1;
@@ -915,15 +926,29 @@ window.toggleSidebar = () => {
     leftCol.style.minWidth = w;
 };
 
+// ── ANNOUNCEMENTS (with image support) ────────────────────────────────────────
 const announceRef = doc(db,'admin','board');
 onSnapshot(announceRef, snap => {
-    const box = document.getElementById('announce-box');
-    const msgEl = document.getElementById('announce-msg');
-    const pollEl = document.getElementById('poll-options');
+    const box     = document.getElementById('announce-box');
+    const msgEl   = document.getElementById('announce-msg');
+    const pollEl  = document.getElementById('poll-options');
+    const imgWrap = document.getElementById('announce-img-wrap');
+    const imgEl   = document.getElementById('announce-img');
+
     if (!snap.exists() || !snap.data().active) { box.style.display='none'; return; }
     const data = snap.data();
     box.style.display = 'block';
     msgEl.textContent = data.message || '';
+
+    // Image support
+    if (data.imageUrl) {
+        imgEl.src = data.imageUrl;
+        imgWrap.style.display = 'block';
+    } else {
+        imgWrap.style.display = 'none';
+        imgEl.src = '';
+    }
+
     pollEl.innerHTML = '';
     if (data.type==='poll' && data.options?.length) {
         const VOTE_KEY = 'poll_vote_'+(data.id||'default');
