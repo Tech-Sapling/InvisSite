@@ -611,13 +611,24 @@ GAMES.forEach((g,i) => { variantMap[g.id] = VARIANTS[i % VARIANTS.length]; });
 // Render immediately — don't wait for Firebase at all
 renderAll();
 
-// Then wire up Firebase listeners to update counts reactively
+// Wire up Firebase listeners — patch in-place AND re-render on first load
+let initialLoadCount = 0;
+const totalGames = GAMES.length;
+
 GAMES.forEach(g => {
     try {
         onSnapshot(doc(db,'games',g.id), snap => {
+            const wasZero = !likesCounts[g.id];
             clickCounts[g.id] = snap.exists() ? (snap.data().clicks || 0) : 0;
             likesCounts[g.id] = snap.exists() ? (snap.data().likes  || 0) : 0;
-            // Just patch the like counts in-place — no full re-render needed
+
+            // Count initial loads and re-render once all games have responded
+            if (wasZero && initialLoadCount < totalGames) {
+                initialLoadCount++;
+                if (initialLoadCount === totalGames) renderAll();
+            }
+
+            // Also patch in-place for live updates after initial render
             document.querySelectorAll(`[data-likes="${g.id}"]`).forEach(el => {
                 const n = likesCounts[g.id] || 0;
                 const lbl = n >= 1000 ? (n/1000).toFixed(1)+'k' : n > 0 ? String(n) : '';
@@ -625,8 +636,14 @@ GAMES.forEach(g => {
                 const bar = el.closest('.status-bar');
                 if (bar) bar.style.display = lbl ? 'flex' : 'none';
             });
-        }, () => {}); // silently ignore per-game errors
-    } catch(e) {}
+        }, () => {
+            initialLoadCount++;
+            if (initialLoadCount === totalGames) renderAll();
+        });
+    } catch(e) {
+        initialLoadCount++;
+        if (initialLoadCount === totalGames) renderAll();
+    }
 });
 
 window.openGame = async (id) => {
