@@ -850,7 +850,7 @@ function mkCard(g, wrapCls, isTop=false) {
     const tags = (g.tags||[]).map(t => `<span class="tag-chip">${t}</span>`).join('');
     const tagRow = tags ? `<div class="tag-row"><div class="tag-row-inner">${tags}</div></div>` : '';
     const glowColor = getGlowColor(g.genres);
-    return `<div class="${wrapCls}"><div class="game-card ${v}" style="--glow-color:${glowColor}" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="${likeLabel?'':'display:none'}"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
+    return `<div class="${wrapCls}"><div class="game-card ${v}" style="--glow-color:${glowColor}" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><div class="status-bar" style="display:none"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div><h1 class="title">${g.name}</h1>${tagRow}</div></div></div></div></div>`;
 }
 
 function mkHeader(title, imgSrc, pill) {
