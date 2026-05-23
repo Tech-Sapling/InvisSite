@@ -429,9 +429,9 @@ body::-webkit-scrollbar { display: none; }
       </span>
     </div>
     <div class="genre-list">
-      <div class="genre-item active" data-genre="all" data-label="All Games" onclick="setGenre('all',this)">
+      <div class="genre-item active" data-genre="all" data-label="Discover" onclick="setGenre('all',this)">
         <span class="genre-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg></span>
-        <span class="genre-label">All Games</span>
+        <span class="genre-label">Discover</span>
       </div>
       <div class="genre-item" data-genre="io" data-label=".IO Games" onclick="setGenre('io',this)">
         <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg></span>
@@ -570,6 +570,7 @@ const GENRE_META = {
 
 let clickCounts    = {};
 let likesCounts    = {};
+let weeklyCounts   = {};
 let recentlyPlayed = JSON.parse(localStorage.getItem('is_recent') || '[]');
 let currentGenre   = 'all';
 let currentSearch  = '';
@@ -591,8 +592,9 @@ GAMES.forEach(g => {
     try {
         onSnapshot(doc(db,'games',g.id), snap => {
             const wasZero = !likesCounts[g.id];
-            clickCounts[g.id] = snap.exists() ? (snap.data().clicks || 0) : 0;
-            likesCounts[g.id] = snap.exists() ? (snap.data().likes  || 0) : 0;
+            clickCounts[g.id] = snap.exists() ? (snap.data().clicks      || 0) : 0;
+            likesCounts[g.id] = snap.exists() ? (snap.data().likes       || 0) : 0;
+            weeklyCounts[g.id] = snap.exists() ? (snap.data().weeklyClicks || 0) : 0;
 
             if (wasZero && initialLoadCount < totalGames) {
                 initialLoadCount++;
@@ -687,10 +689,25 @@ window.openGame = async (id) => {
     const sessionKey = 'playing_' + id;
     if (!sessionStorage.getItem(sessionKey)) {
         try {
-            const ref = doc(db,'games',id);
+            const ref  = doc(db,'games',id);
             const snap = await getDoc(ref);
-            if (!snap.exists()) await setDoc(ref,{clicks:1});
-            else await updateDoc(ref,{clicks:increment(1)});
+            const todayStr = (() => {
+                const d = new Date();
+                const jan1 = new Date(d.getFullYear(), 0, 1);
+                const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+                return `${d.getFullYear()}-W${week}`;
+            })(); // "YYYY-WNN"
+            if (!snap.exists()) {
+                await setDoc(ref,{clicks:1, weeklyClicks:1, weeklyDate:todayStr});
+            } else {
+                const d = snap.data();
+                const needsReset = d.weeklyDate !== todayStr;
+                await updateDoc(ref,{
+                    clicks:       increment(1),
+                    weeklyClicks: needsReset ? 1 : increment(1),
+                    weeklyDate:   todayStr,
+                });
+            }
             sessionStorage.setItem(sessionKey,'1');
         } catch(e) {}
     }
@@ -852,6 +869,15 @@ function mkCard(g, wrapCls, isTop=false) {
     return `<div class="${wrapCls}"><div class="game-card ${v}" data-genre="${g.genres[0]||''}" style="--glow-color:${glowColor}" onclick="openGame('${g.id}')"><div class="image-box">${crown}<img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><h1 class="title">${g.name}</h1><div class="tag-row"><div class="tag-row-inner"><div class="status-bar"><div class="like-heart"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><span class="like-text" data-likes="${g.id}">${likeLabel}</span></div>${tags}</div></div></div></div></div></div></div>`;
 }
 
+function mkCardPlays(g, wrapCls) {
+    const v = variantMap[g.id] || 'v-a';
+    const plays = weeklyCounts[g.id] || 0;
+    const playsLabel = plays >= 1000 ? (plays/1000).toFixed(1)+'k' : String(plays);
+    const tags = (g.tags||[]).map(t => `<span class="tag-chip">${t}</span>`).join('');
+    const glowColor = getGlowColor(g.genres);
+    return `<div class="${wrapCls}"><div class="game-card ${v}" data-genre="${g.genres[0]||''}" style="--glow-color:${glowColor}" onclick="openGame('${g.id}')"><div class="image-box"><img src="${g.img}" alt="${g.name}" class="game-img" loading="lazy"><div class="overlay"><div class="card-content"><h1 class="title">${g.name}</h1><div class="tag-row"><div class="tag-row-inner"><div class="status-bar"><div class="like-heart"><svg viewBox="0 0 24 24" fill="none" stroke="#ffd600" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="like-text" style="color:#ffd600">${playsLabel} plays this week</span></div>${tags}</div></div></div></div></div></div></div>`;
+}
+
 function mkHeader(title, imgSrc, pill, accentColor) {
     const col = accentColor || 'var(--accent)';
     return `<div class="section-header"><div class="header-content" style="border-left-color:${col}">${imgSrc?`<img src="${imgSrc}" class="header-img">`:''}
@@ -889,22 +915,36 @@ function renderAll() {
     const topGameId  = allByLikes[0]?.id;
     const fyHero = allByLikes[0];
     const fyRest = allByLikes.filter(g=>g.id!==fyHero.id);
-    html += `<div class="section anim-section">${mkHeader('For You','https://img.itch.zone/aW1nLzE5OTMwNzM2LnBuZw==/original/9xRpPp.png','Popular','#4f7cff')}<div class="grid-foryou">${mkCard(fyHero,'hero-left',true)}${fyRest.slice(0,4).map(g=>mkCard(g,'small',g.id===topGameId)).join('')}</div></div>`;
+    const randImg = arr => arr[Math.floor(Math.random()*arr.length)]?.img || null;
+
+    const fyImg = randImg(allByLikes);
+    html += `<div class="section anim-section">${mkHeader('For You',fyImg,'Popular','#4f7cff')}<div class="grid-foryou">${mkCard(fyHero,'hero-left',true)}${fyRest.slice(0,4).map(g=>mkCard(g,'small',g.id===topGameId)).join('')}</div></div>`;
 
     if (recentlyPlayed.length) {
         const recG = recentlyPlayed.map(id=>GAMES.find(g=>g.id===id)).filter(Boolean);
-        html += `<div class="section anim-section">${mkHeader('Recently Played',null,null,'#00e5ff')}<div class="grid-4">${recG.map(g=>mkCard(g,'g4-card',g.id===topGameId)).join('')}</div></div>`;
+        const recImg = randImg(recG);
+        html += `<div class="section anim-section">${mkHeader('Recently Played',recImg,null,'#00e5ff')}<div class="grid-4">${recG.map(g=>mkCard(g,'g4-card',g.id===topGameId)).join('')}</div></div>`;
+    }
+
+    const topWeek = [...GAMES]
+        .filter(g => (weeklyCounts[g.id] || 0) > 0)
+        .sort((a,b) => (weeklyCounts[b.id]||0) - (weeklyCounts[a.id]||0))
+        .slice(0, 8);
+    if (topWeek.length) {
+        const weekImg = randImg(topWeek);
+        html += `<div class="section anim-section">${mkHeader('Most Played This Week',weekImg,null,'#ffd600')}<div class="grid-4">${topWeek.map(g=>mkCardPlays(g,'g4-card')).join('')}</div></div>`;
     }
 
     const frontPageGames = [...GAMES].filter(g => g.showOnFrontPage !== false);
     const shuffled = [...frontPageGames].sort(()=>Math.random()-0.5);
+    const allImg = randImg(frontPageGames);
     const wideAt = new Set([0,7,14]), tallAt = new Set([3,10,17]);
     const allCards = shuffled.map((g,i) => {
         if (wideAt.has(i%18)) return mkCard(g,'wide-card',g.id===topGameId);
         if (tallAt.has(i%18)) return mkCard(g,'tall-card',g.id===topGameId);
         return mkCard(g,'g3-card',g.id===topGameId);
     }).join('');
-    html += `<div class="section anim-section">${mkHeader('All Games',null,null,'#b04fff')}<div class="grid-mixed">${allCards}</div></div>`;
+    html += `<div class="section anim-section">${mkHeader('Discover',allImg,null,'#b04fff')}<div class="grid-mixed">${allCards}</div></div>`;
 
     document.getElementById('content').innerHTML = html;
 }
