@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+  (function() {
+    // 1. Check if the page is NOT inside an iframe (direct access check)
+    if (window.self === window.top) {
+      // Clear the page immediately so they see nothing
+      document.documentElement.innerHTML = "";
+      // Redirect to your Google Site
+      window.location.replace("https://sites.google.com/view/lohost/");
+      return;
+    }
+
+    // 2. Extra protections for those trying to Inspect Element while in the embed
+    // Disable right-click
+    document.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Disable keyboard shortcuts (F12, Ctrl+Shift+I, etc.)
+    document.onkeydown = function(e) {
+      if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && [73, 74, 67].includes(e.keyCode)) || (e.ctrlKey && e.keyCode == 85)) {
+        return false;
+      }
+    };
+
+    // 3. Debugger trap: Pauses their browser if they manage to open the console
+    setInterval(function() {
+      debugger;
+    }, 50);
+  })();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
