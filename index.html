@@ -647,9 +647,9 @@ GAMES.forEach(g => {
 // ── LOADING SCREEN ──
 const LS_TIPS = [
     'Loading game assets…',
-    'Connecting to servers…',
+    'Connecting to sapling…',
     'Preparing your session…',
-    'Warming up the engine…',
+    'Cloaking the site…',
     'Almost ready to play…',
 ];
 
@@ -814,7 +814,7 @@ window.doVote = async (type) => {
 };
 
 window.doShare = () => {
-    const url = 'https://sites.google.com/view/404-page-not-fetched/page';
+    const url = 'https://sites.google.com/view/lohost/';
     navigator.clipboard.writeText(url).then(() => {
         const lbl = document.getElementById('gbar-share-label');
         const btn = document.getElementById('gbar-share');
