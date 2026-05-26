@@ -100,26 +100,31 @@ body::-webkit-scrollbar { display: none; }
 #auth-signin-btn:hover { color: #fff; }
 #auth-signin-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 #auth-user-wrap { position: relative; display: none; align-items: center; gap: 8px; }
-#auth-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #4f7cff, #b04fff);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 900; color: #fff;
-    cursor: pointer; user-select: none; flex-shrink: 0;
-    border: 2px solid rgba(79,124,255,0.4);
-    transition: border-color .2s, transform .15s;
+#auth-myaccount-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: none;
+    color: #7da4ff; font-size: 12px; font-weight: 700;
+    font-family: inherit; padding: 7px 14px; border-radius: 8px;
+    cursor: pointer; transition: color .2s;
 }
-#auth-avatar:hover { border-color: rgba(79,124,255,0.8); transform: scale(1.06); }
-#auth-username-label { font-size: 12px; font-weight: 700; color: #c5d0f0; cursor: pointer; }
+#auth-myaccount-btn:hover { color: #fff; }
+#auth-myaccount-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 #auth-dropdown {
     position: absolute; top: calc(100% + 8px); right: 0;
     background: #0d1530; border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px; overflow: hidden; min-width: 150px;
+    border-radius: 10px; overflow: hidden; min-width: 170px;
     box-shadow: 0 12px 36px rgba(0,0,0,0.6);
     display: none; z-index: 9999;
     animation: dropdownIn .15s var(--ease) both;
 }
 #auth-dropdown.open { display: block; }
+.auth-dd-user {
+    padding: 10px 14px 8px;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
 .auth-dd-item {
     display: flex; align-items: center; gap: 8px;
     padding: 10px 14px; cursor: pointer; font-size: 12px;
@@ -272,7 +277,6 @@ body::-webkit-scrollbar { display: none; }
 .genre-item.active .genre-label, .genre-item:hover .genre-label { color: #fff; }
 .sidebar.collapsed .genre-label { opacity: 0; pointer-events: none; }
 .sidebar.collapsed .genre-item:hover::after { content: attr(data-label); position: absolute; left: calc(var(--sidebar-col) + 8px); top: 50%; transform: translateY(-50%); background: #1a2760; color: #fff; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 8px; white-space: nowrap; z-index: 999; box-shadow: 0 6px 20px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); pointer-events: none; }
-#favorites-genre-item { display: none; }
 .section { margin-bottom: 32px; }
 .section-header { margin-bottom: 14px; }
 .header-content { position: relative; width: 100%; height: 52px; background: var(--bg-header); overflow: hidden; display: flex; align-items: center; border-radius: 10px; border-left: 4px solid var(--accent); }
@@ -421,8 +425,8 @@ body::-webkit-scrollbar { display: none; }
       oninput="handleSearchInput(this.value)" onkeydown="handleSearchKey(event)" onfocus="showDropdown()">
     <div id="search-dropdown"></div>
   </div>
-  <!-- AUTH -->
-<!-- TIKTOK + AUTH -->
+
+  <!-- TIKTOK + AUTH -->
   <a href="https://tiktok.com/@InvisibleSite" target="_blank" rel="noopener"
      style="display:flex;align-items:center;gap:6px;color:#7da4ff;font-size:12px;font-weight:700;text-decoration:none;padding:7px 14px;border-radius:8px;transition:color .2s;flex-shrink:0;"
      onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#7da4ff'">
@@ -440,9 +444,12 @@ body::-webkit-scrollbar { display: none; }
       Sign In
     </button>
     <div id="auth-user-wrap">
-      <div id="auth-avatar" onclick="toggleAuthDropdown()"></div>
-      <span id="auth-username-label" onclick="toggleAuthDropdown()"></span>
+      <button id="auth-myaccount-btn" onclick="toggleAuthDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Account
+      </button>
       <div id="auth-dropdown">
+        <div class="auth-dd-user" id="auth-dd-username">—</div>
         <div class="auth-dd-item" onclick="setGenreFromAuth('favorites')">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           My Favorites
@@ -553,10 +560,6 @@ body::-webkit-scrollbar { display: none; }
       <div class="genre-item active" data-genre="all" data-label="Discover" onclick="setGenre('all',this)">
         <span class="genre-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="8" y1="12" x2="12" y2="12"/><line x1="10" y1="10" x2="10" y2="14"/><circle cx="17" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="19.5" cy="13" r="1" fill="currentColor" stroke="none"/></svg></span>
         <span class="genre-label">Discover</span>
-      </div>
-      <div class="genre-item" id="favorites-genre-item" data-genre="favorites" data-label="Favorites" onclick="setGenre('favorites',this)">
-        <span class="genre-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
-        <span class="genre-label">Favorites</span>
       </div>
       <div class="genre-item" data-genre="io" data-label=".IO Games" onclick="setGenre('io',this)">
         <span class="genre-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4 4-4 14 0 18M12 3c4 4 4 14 0 18"/></svg></span>
@@ -766,21 +769,15 @@ onAuthStateChanged(auth, async user => {
 function updateAuthUI(loggedIn, username) {
     const signinBtn   = document.getElementById('auth-signin-btn');
     const userWrap    = document.getElementById('auth-user-wrap');
-    const avatar      = document.getElementById('auth-avatar');
-    const userLabel   = document.getElementById('auth-username-label');
-    const favItem     = document.getElementById('favorites-genre-item');
 
     if (loggedIn) {
         signinBtn.style.display = 'none';
         userWrap.style.display  = 'flex';
-        avatar.textContent = username.charAt(0).toUpperCase();
-        userLabel.textContent  = username;
-        favItem.style.display  = 'flex';
+        document.getElementById('auth-dd-username').textContent = username;
         document.getElementById('gbar-fav').style.display = 'flex';
     } else {
         signinBtn.style.display = 'flex';
         userWrap.style.display  = 'none';
-        favItem.style.display   = 'none';
         document.getElementById('gbar-fav').style.display = 'none';
         if (currentGenre === 'favorites') {
             currentGenre = 'all';
@@ -921,7 +918,10 @@ window.doLogout = async () => {
 window.setGenreFromAuth = (g) => {
     document.getElementById('auth-dropdown').classList.remove('open');
     const el = document.querySelector(`.genre-item[data-genre="${g}"]`);
-    if (el) setGenre(g, el);
+    if (el) { setGenre(g, el); } else {
+        currentGenre = g;
+        renderAll();
+    }
 };
 
 function updateFavBtn() {
@@ -1257,7 +1257,7 @@ window.renderAll    = renderAll;
 window.setGenre = (g, el) => {
     currentGenre = g;
     document.querySelectorAll('.genre-item').forEach(i=>i.classList.remove('active'));
-    el.classList.add('active');
+    if (el) el.classList.add('active');
     renderAll();
 };
 
