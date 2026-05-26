@@ -1057,11 +1057,13 @@ window.closeGame = async () => {
     const lsOv = document.getElementById('ls-overlay');
     const lsBg = document.getElementById('ls-bg');
     lsOv.style.display = 'none'; lsOv.classList.remove('ls-fade-out'); lsBg.style.animationPlayState = 'paused';
+    
+    document.getElementById('game-iframe').src = 'about:blank'; // ← moved up here
+    
     const overlay = document.getElementById('game-overlay');
     overlay.classList.remove('entering'); overlay.classList.add('exiting');
     overlay.addEventListener('animationend', () => {
         overlay.classList.remove('active','exiting');
-        document.getElementById('game-iframe').src = 'about:blank';
         document.body.style.overflow = '';
     }, { once: true });
 };
