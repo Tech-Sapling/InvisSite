@@ -1058,7 +1058,11 @@ window.closeGame = async () => {
     const lsBg = document.getElementById('ls-bg');
     lsOv.style.display = 'none'; lsOv.classList.remove('ls-fade-out'); lsBg.style.animationPlayState = 'paused';
     
-    document.getElementById('game-iframe').src = 'about:blank'; // ← moved up here
+const iframe = document.getElementById('game-iframe');
+const newIframe = iframe.cloneNode(false); // clone without src
+newIframe.src = 'about:blank';
+iframe.parentNode.replaceChild(newIframe, iframe);
+newIframe.id = 'game-iframe';
     
     const overlay = document.getElementById('game-overlay');
     overlay.classList.remove('entering'); overlay.classList.add('exiting');
