@@ -23,6 +23,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -515,6 +516,9 @@ body::-webkit-scrollbar { display: none; }
       <label>Password</label>
       <input class="auth-input" id="auth-password-input" type="password" placeholder="Enter password…" maxlength="18" autocomplete="off">
       <div class="auth-hint" id="auth-password-hint">4–18 characters</div>
+    </div>
+    <div id="recaptcha-wrap" style="display:none;margin-bottom:14px;transform:scale(0.88);transform-origin:left top;">
+        <div class="h-captcha" data-sitekey="4f08cc5a-9966-4ec4-a79e-702c6bc8de2a" data-theme="dark"></div>
     </div>
     <button id="auth-submit" onclick="handleAuthSubmit()">Sign In</button>
     <div class="auth-switch" id="auth-switch-text">
@@ -1038,6 +1042,8 @@ window.switchTab = (tab) => {
     document.getElementById('auth-username-hint').style.display = tab === 'signup' ? 'block' : 'none';
     document.getElementById('auth-password-hint').style.display = tab === 'signup' ? 'block' : 'none';
     setAuthError('');
+    document.getElementById('recaptcha-wrap').style.display = tab === 'signup' ? 'block' : 'none';
+    if (tab === 'signin' && typeof hcaptcha !== 'undefined') hcaptcha.reset();
 };
 function setAuthError(msg) {
     const el = document.getElementById('auth-error');
@@ -1066,6 +1072,8 @@ window.handleAuthSubmit = async () => {
 
     try {
         if (authMode === 'signup') {
+            const recapResponse = typeof hcaptcha !== 'undefined' ? hcaptcha.getResponse() : '';
+            if (!recapResponse) { setAuthError('Please complete the CAPTCHA.'); btn.disabled = false; btn.textContent = 'Create Account'; return; }
             const existing = await getDoc(doc(db,'usernames',username.toLowerCase()));
             if (existing.exists()) { setAuthError('That username is already taken.'); btn.disabled = false; btn.textContent = 'Create Account'; return; }
             const cred = await createUserWithEmailAndPassword(auth, fakeEmail, password);
@@ -1077,6 +1085,7 @@ window.handleAuthSubmit = async () => {
             await setDoc(doc(db,'usernames',username.toLowerCase()), { uid: cred.user.uid });
             currentUserDoc = { username, favorites: [], playedGames: [], achievements: [], loginDays: [] };
             userFavorites = [];
+            if (typeof hcaptcha !== 'undefined') hcaptcha.reset();
             closeAuthModal();
         } else {
             const unSnap = await getDoc(doc(db,'usernames',username.toLowerCase()));
