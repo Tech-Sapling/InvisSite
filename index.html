@@ -1185,26 +1185,27 @@ window.openGame = async (id) => {
     localStorage.setItem('is_recent', JSON.stringify(recentlyPlayed));
     trackGamePlayed(id);
 
-    const sessionKey = 'playing_' + id;
-    if (!sessionStorage.getItem(sessionKey)) {
-        try {
-            const ref  = doc(db,'games',id);
-            const snap = await getDoc(ref);
-            const todayStr = (() => {
-                const d = new Date();
-                const jan1 = new Date(d.getFullYear(), 0, 1);
-                const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
-                return `${d.getFullYear()}-W${week}`;
-            })();
-            if (!snap.exists()) {
-                await setDoc(ref,{clicks:1,weeklyClicks:1,weeklyDate:todayStr});
-            } else {
-                const d = snap.data();
-                await updateDoc(ref,{ clicks: increment(1), weeklyClicks: d.weeklyDate !== todayStr ? 1 : increment(1), weeklyDate: todayStr });
-            }
-            sessionStorage.setItem(sessionKey,'1');
-        } catch(e) {}
-    }
+const sessionKey = 'playing_' + id;
+    const todayStr = (() => {
+        const d = new Date();
+        const day = d.getDay();
+        const sat = new Date(d);
+        sat.setDate(d.getDate() - (day === 6 ? 0 : (day + 1) % 7));
+        return sat.toISOString().slice(0, 10);
+    })();
+    try {
+        const ref  = doc(db,'games',id);
+        const snap = await getDoc(ref);
+        const isNewWeek = snap.exists() && snap.data().weeklyDate !== todayStr;
+        if (!snap.exists()) {
+            await setDoc(ref,{clicks:1,weeklyClicks:1,weeklyDate:todayStr});
+        } else if (isNewWeek) {
+            await updateDoc(ref,{ clicks: increment(1), weeklyClicks: 1, weeklyDate: todayStr });
+        } else if (!sessionStorage.getItem(sessionKey)) {
+            await updateDoc(ref,{ clicks: increment(1), weeklyClicks: increment(1), weeklyDate: todayStr });
+        }
+        sessionStorage.setItem(sessionKey,'1');
+    } catch(e) {}
 
     const overlay = document.getElementById('game-overlay');
     overlay.classList.remove('exiting');
