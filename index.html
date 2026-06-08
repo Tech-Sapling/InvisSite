@@ -1186,26 +1186,33 @@ window.openGame = async (id) => {
     trackGamePlayed(id);
 
 const sessionKey = 'playing_' + id;
-    const todayStr = (() => {
-        const d = new Date();
-        const day = d.getDay();
-        const sat = new Date(d);
-        sat.setDate(d.getDate() - (day === 6 ? 0 : (day + 1) % 7));
-        return sat.toISOString().slice(0, 10);
-    })();
-    try {
-        const ref  = doc(db,'games',id);
-        const snap = await getDoc(ref);
-        const isNewWeek = snap.exists() && snap.data().weeklyDate !== todayStr;
-        if (!snap.exists()) {
-            await setDoc(ref,{clicks:1,weeklyClicks:1,weeklyDate:todayStr});
-        } else if (isNewWeek) {
-            await updateDoc(ref,{ clicks: increment(1), weeklyClicks: 1, weeklyDate: todayStr });
-        } else if (!sessionStorage.getItem(sessionKey)) {
-            await updateDoc(ref,{ clicks: increment(1), weeklyClicks: increment(1), weeklyDate: todayStr });
-        }
-        sessionStorage.setItem(sessionKey,'1');
-    } catch(e) {}
+const todayStr = (() => {
+    const d = new Date();
+    const day = d.getDay();
+    const sat = new Date(d);
+    sat.setDate(d.getDate() - (day === 6 ? 0 : (day + 1) % 7));
+    return sat.toISOString().slice(0, 10);
+})();
+try {
+    const ref  = doc(db,'games',id);
+    const snap = await getDoc(ref);
+    const isNewWeek = snap.exists() && snap.data().weeklyDate !== todayStr;
+
+    if (isNewWeek) {
+        // Reset ALL games' weekly clicks, then set this one to 1
+        const resetPromises = GAMES.map(g => {
+            const gRef = doc(db, 'games', g.id);
+            return updateDoc(gRef, { weeklyClicks: 0, weeklyDate: todayStr }).catch(() => {});
+        });
+        await Promise.all(resetPromises);
+        await updateDoc(ref, { clicks: increment(1), weeklyClicks: 1 });
+    } else if (!snap.exists()) {
+        await setDoc(ref, { clicks: 1, weeklyClicks: 1, weeklyDate: todayStr });
+    } else if (!sessionStorage.getItem(sessionKey)) {
+        await updateDoc(ref, { clicks: increment(1), weeklyClicks: increment(1), weeklyDate: todayStr });
+    }
+    sessionStorage.setItem(sessionKey, '1');
+} catch(e) {}
 
     const overlay = document.getElementById('game-overlay');
     overlay.classList.remove('exiting');
