@@ -262,6 +262,7 @@ body::-webkit-scrollbar { display: none; }
 @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
 .anim-section { animation: fadeUp .42s var(--ease) both; }
+#content.no-anim .anim-section, #content.no-anim .game-card { animation: none !important; }
 #game-overlay { display: none; position: fixed; inset: 0; z-index: 9000; background: #090e21; flex-direction: column; }
 #game-overlay.active { display: flex; }
 @keyframes overlayEnter { from{opacity:0;transform:translateY(40px) scale(0.982);filter:blur(8px)} to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)} }
@@ -941,6 +942,7 @@ const variantMap = {};
 GAMES.forEach((g,i) => { variantMap[g.id] = VARIANTS[i % VARIANTS.length]; });
 
 renderAll();
+document.getElementById('content').classList.add('no-anim');
 
 let initialLoadCount = 0;
 const totalGames = GAMES.length;
