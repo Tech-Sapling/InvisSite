@@ -149,7 +149,10 @@ body::-webkit-scrollbar { display: none; }
 .left-col::-webkit-scrollbar { display: none; }
 .announce-box { background: var(--bg-sidebar); border-radius: 14px; border: 1px solid rgba(79,124,255,0.2); overflow: hidden; flex-shrink: 0; transition: opacity .32s var(--ease), max-height .38s var(--ease), margin-top .32s var(--ease); max-height: 600px; opacity: 1; }
 .announce-box.hidden { opacity: 0; max-height: 0; margin-top: -12px; pointer-events: none; }
-.announce-header { display: flex; align-items: center; gap: 6px; padding: 10px 14px 6px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #4f7cff; border-bottom: 1px solid rgba(79,124,255,0.12); }
+.announce-box.is-ad { border-color: rgba(255,214,0,0.5); }
+.announce-box.is-ad .announce-header { border-bottom-color: rgba(255,214,0,0.2); }
+.announce-header { display: flex; align-items: center; gap: 6px; padding: 10px 14px 6px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #4f7cff; border-bottom: 1px solid rgba(79,124,255,0.12); transition: color .2s, border-color .2s; }
+.announce-box.is-ad .announce-header { color: #ffd600; }
 .announce-msg { padding: 10px 14px; font-size: 12.5px; font-weight: 500; color: #c5d0f0; line-height: 1.55; }
 .announce-img-wrap { padding: 0 10px 10px; }
 .announce-img { width: 100%; max-height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(79,124,255,0.15); display: block; }
@@ -1496,6 +1499,13 @@ onSnapshot(announceRef, snap => {
     const data = snap.data();
     box.style.display = 'block';
     msgEl.textContent = data.message || '';
+
+    const isAd = !!data.isAd;
+    box.classList.toggle('is-ad', isAd);
+    const headerSvg  = box.querySelector('.announce-header svg');
+    const headerSpan = box.querySelector('.announce-header span');
+    if (headerSvg)  headerSvg.setAttribute('stroke', isAd ? '#ffd600' : '#4f7cff');
+    if (headerSpan) headerSpan.textContent = isAd ? 'AD' : 'Admin';
 
     // Image
     if (data.imageUrl) { imgEl.src = data.imageUrl; imgWrap.style.display = 'block'; }
